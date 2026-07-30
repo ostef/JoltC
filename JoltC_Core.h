@@ -37,6 +37,11 @@
     #define JOLTC_CALL
 #endif
 
+// Jolt library version
+#define JOLTC_VERSION_MAJOR 5
+#define JOLTC_VERSION_MINOR 6
+#define JOLTC_VERSION_PATCH 0
+
 #ifdef JPH_DOUBLE_PRECISION
     #define JOLTC_DOUBLE_PRECISION
 #endif
@@ -128,6 +133,8 @@
 #endif
 #define JOLTC_VERSION_FEATURES (uint64_t(JOLTC_VERSION_FEATURE_BIT_1) | (JOLTC_VERSION_FEATURE_BIT_2 << 1) | (JOLTC_VERSION_FEATURE_BIT_3 << 2) | (JOLTC_VERSION_FEATURE_BIT_4 << 3) | (JOLTC_VERSION_FEATURE_BIT_5 << 4) | (JOLTC_VERSION_FEATURE_BIT_6 << 5) | (JOLTC_VERSION_FEATURE_BIT_7 << 6) | (JOLTC_VERSION_FEATURE_BIT_8 << 7) | (JOLTC_VERSION_FEATURE_BIT_9 << 8) | (JOLTC_VERSION_FEATURE_BIT_10 << 9) | (JOLTC_VERSION_FEATURE_BIT_11 << 10))
 
+// Combine the version and features in a single ID
+#define JOLTC_VERSION_ID ((JOLTC_VERSION_FEATURES << 24) | (JOLTC_VERSION_MAJOR << 16) | (JOLTC_VERSION_MINOR << 8) | JOLTC_VERSION_PATCH)
 // Determine if we want extra debugging code to be active
 #if !defined(NDEBUG) && !defined(JPH_NO_DEBUG)
     #define JOLTC_DEBUG
@@ -144,6 +151,21 @@
 
 #define JOLTC_VECTOR_ALIGNMENT 16 // @Todo: match this with Jolt/Core/Core.h
 #define JOLTC_DVECTOR_ALIGNMENT 32
+
+typedef uint64_t JPH_EFeatures;
+enum JPH_EFeaturesFlags_ {
+    JPH_EFeatures_DoublePrecision                = 1 << 0,
+    JPH_EFeatures_CrossPlatformDeterministic     = 1 << 1,
+    JPH_EFeatures_FloatingPointExceptionsEnabled = 1 << 2,
+    JPH_EFeatures_ProfileEnabled                 = 1 << 3,
+    JPH_EFeatures_ExternalProfile                = 1 << 4,
+    JPH_EFeatures_DebugRenderer                  = 1 << 5,
+    JPH_EFeatures_DisableTempAllocator           = 1 << 6,
+    JPH_EFeatures_DisableCustomAllocator         = 1 << 7,
+    JPH_EFeatures_ObjectLayer32Bits              = 1 << 8,
+    JPH_EFeatures_EnableAsserts                  = 1 << 9,
+    JPH_EFeatures_ObjectStream                   = 1 << 10,
+};
 
 typedef struct JPH_TempAllocator {
     char opaque;

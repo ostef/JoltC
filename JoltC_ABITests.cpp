@@ -16,7 +16,7 @@ JOLTC_SUPPRESS_WARNINGS()
 void ABITests() {
     using uint64 = uint64_t;
 
-    JPH_ASSERT(JOLTC_VERSION_FEATURES == JPH_VERSION_FEATURES, "JoltC and Jolt feature bits mismatch");
+    JPH_ASSERT(JOLTC_VERSION_ID == JPH_VERSION_ID, "JoltC and Jolt version ID mismatch");
 
     ABI_TEST(JPH_Float3, JPH::Float3);
     ABI_TEST_OFFSET_OF(JPH_Float3, x, JPH::Float3, x);
