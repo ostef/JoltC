@@ -270,7 +270,21 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_SoftBodyCreationSettings, JPH::SoftBodyCreationS
 
 DEFINE_CONVERSION_FUNCTIONS(JPH_SpringSettings, JPH::SpringSettings);
 DEFINE_CONVERSION_FUNCTIONS(JPH_MotorSettings, JPH::MotorSettings);
-DEFINE_CONVERSION_FUNCTIONS(JPH_Constraint, JPH::Constraint);
-DEFINE_CONVERSION_FUNCTIONS(JPH_TwoBodyConstraint, JPH::TwoBodyConstraint);
+
 DEFINE_CONVERSION_FUNCTIONS(JPH_PathConstraintPath, JPH::PathConstraintPath);
 DEFINE_CONVERSION_FUNCTIONS(JPH_PathConstraintPathHermite, JPH::PathConstraintPathHermite);
+
+DEFINE_CONVERSION_FUNCTIONS(JPH_Constraint, JPH::Constraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_TwoBodyConstraint, JPH::TwoBodyConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_ConeConstraint, JPH::ConeConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_DistanceConstraint, JPH::DistanceConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_FixedConstraint, JPH::FixedConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_GearConstraint, JPH::GearConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_HingeConstraint, JPH::HingeConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_PathConstraint, JPH::PathConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_PointConstraint, JPH::PointConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_PulleyConstraint, JPH::PulleyConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_RackAndPinionConstraint, JPH::RackAndPinionConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_SixDOFConstraint, JPH::SixDOFConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_SliderConstraint, JPH::SliderConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_SwingTwistConstraint, JPH::SwingTwistConstraint);

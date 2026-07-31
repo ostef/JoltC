@@ -335,9 +335,12 @@ JOLTC_API uint32_t JPH_Constraint_GetNumPositionStepsOverride(const JPH_Constrai
 JOLTC_API void JPH_Constraint_SetNumPositionStepsOverride(JPH_Constraint *constraint, uint32_t steps);
 JOLTC_API void JPH_Constraint_SetEnabled(JPH_Constraint *constraint, bool enabled);
 JOLTC_API bool JPH_Constraint_GetEnabled(const JPH_Constraint *constraint);
+#ifdef JOLTC_DEBUG_RENDERER
 JOLTC_API float JPH_Constraint_GetDrawConstraintSize(const JPH_Constraint *constraint);
 JOLTC_API void JPH_Constraint_SetDrawConstraintSize(JPH_Constraint *constraint, float inSize);
-JOLTC_API JPH_ConstraintSettings *JPH_Constraint_GetConstraintSettings(const JPH_Constraint *constraint);
+#endif
+// @Todo
+// JOLTC_API JPH_ConstraintSettings *JPH_Constraint_GetConstraintSettings(const JPH_Constraint *constraint);
 
 typedef struct JPH_TwoBodyConstraint {
     JPH_Constraint base;
@@ -350,7 +353,7 @@ typedef struct JPH_ConeConstraint {
     JPH_TwoBodyConstraint base;
 } JPH_ConeConstraint;
 
-JOLTC_API void JPH_ConeConstraint_SetHalfConeAngle(float halfConeAngle);
+JOLTC_API void JPH_ConeConstraint_SetHalfConeAngle(JPH_ConeConstraint *constraint, float halfConeAngle);
 JOLTC_API float JPH_ConeConstraint_GetCosHalfConeAngle(const JPH_ConeConstraint *constraint);
 
 typedef struct JPH_DistanceConstraint {
@@ -362,7 +365,7 @@ JOLTC_API float JPH_DistanceConstraint_GetMinDistance(const JPH_DistanceConstrai
 JOLTC_API float JPH_DistanceConstraint_GetMaxDistance(const JPH_DistanceConstraint *constraint);
 JOLTC_API const JPH_SpringSettings *JPH_DistanceConstraint_GetLimitsSpringSettingsConst(const JPH_DistanceConstraint *constraint);
 JOLTC_API JPH_SpringSettings *JPH_DistanceConstraint_GetLimitsSpringSettings(JPH_DistanceConstraint *constraint);
-JOLTC_API void JPH_DistanceConstraint_SetLimitsSpringSettings(const JPH_SpringSettings *limitsSpringSettings);
+JOLTC_API void JPH_DistanceConstraint_SetLimitsSpringSettings(JPH_DistanceConstraint *constraint, const JPH_SpringSettings *limitsSpringSettings);
 
 typedef struct JPH_FixedConstraint {
     JPH_TwoBodyConstraint base;
@@ -372,7 +375,7 @@ typedef struct JPH_GearConstraint {
     JPH_TwoBodyConstraint base;
 } JPH_GearConstraint;
 
-JOLTC_API void JPH_GearConstraint_SetConstraints(const JPH_GearConstraint *constraint, const JPH_Constraint *gear1, const JPH_Constraint *gear2);
+JOLTC_API void JPH_GearConstraint_SetConstraints(JPH_GearConstraint *constraint, const JPH_Constraint *gear1, const JPH_Constraint *gear2);
 
 typedef struct JPH_HingeConstraint {
     JPH_TwoBodyConstraint base;
