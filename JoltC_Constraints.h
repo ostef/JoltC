@@ -316,4 +316,4 @@ typedef struct JPH_SwingTwistConstraintSettings {
     JPH_MotorSettings twistMotorSettings;
 } JPH_SwingTwistConstraintSettings;
 
-JOLTC_API JPH_TwoBodyConstraint *JPH_JPH_SwingTwistConstraintSettings_CreateConstraint(const JPH_SwingTwistConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
+JOLTC_API JPH_TwoBodyConstraint *JPH_SwingTwistConstraintSettings_CreateConstraint(const JPH_SwingTwistConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);

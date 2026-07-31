@@ -234,7 +234,7 @@ JPH_TwoBodyConstraint *JPH_SliderConstraintSettings_CreateConstraint(const JPH_S
 
 }
 
-JPH_TwoBodyConstraint *JPH_JPH_SwingTwistConstraintSettings_CreateConstraint(const JPH_SwingTwistConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
+JPH_TwoBodyConstraint *JPH_SwingTwistConstraintSettings_CreateConstraint(const JPH_SwingTwistConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::SwingTwistConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
     cppSettings.mSpace = static_cast<JPH::EConstraintSpace>(settings->space);
