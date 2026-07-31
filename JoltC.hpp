@@ -87,6 +87,10 @@
 #include <Jolt/Physics/Constraints/SixDOFConstraint.h>
 #include <Jolt/Physics/Constraints/GearConstraint.h>
 #include <Jolt/Physics/Constraints/PulleyConstraint.h>
+#include <Jolt/Physics/Constraints/PathConstraintPath.h>
+#include <Jolt/Physics/Constraints/PathConstraintPathHermite.h>
+#include <Jolt/Physics/Constraints/PathConstraint.h>
+#include <Jolt/Physics/Constraints/RackAndPinionConstraint.h>
 #include <Jolt/Physics/Character/Character.h>
 #include <Jolt/Physics/Character/CharacterVirtual.h>
 #include <Jolt/Physics/Collision/PhysicsMaterialSimple.h>
@@ -261,3 +265,12 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_IndexedTriangle, JPH::IndexedTriangle);
 DEFINE_CONVERSION_FUNCTIONS(JPH_MassProperties, JPH::MassProperties);
 DEFINE_CONVERSION_FUNCTIONS(JPH_BodyCreationSettings, JPH::BodyCreationSettings);
 DEFINE_CONVERSION_FUNCTIONS(JPH_SoftBodyCreationSettings, JPH::SoftBodyCreationSettings);
+
+// Constraints
+
+DEFINE_CONVERSION_FUNCTIONS(JPH_SpringSettings, JPH::SpringSettings);
+DEFINE_CONVERSION_FUNCTIONS(JPH_MotorSettings, JPH::MotorSettings);
+DEFINE_CONVERSION_FUNCTIONS(JPH_Constraint, JPH::Constraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_TwoBodyConstraint, JPH::TwoBodyConstraint);
+DEFINE_CONVERSION_FUNCTIONS(JPH_PathConstraintPath, JPH::PathConstraintPath);
+DEFINE_CONVERSION_FUNCTIONS(JPH_PathConstraintPathHermite, JPH::PathConstraintPathHermite);
