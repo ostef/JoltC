@@ -3,7 +3,7 @@
 #include <JoltC_Core.h>
 #include <JoltC_Body.h>
 
-#ifndef JPH_DEBUG_RENDERER
+#ifndef JOLTC_DEBUG_RENDERER
 #error "This file must only be included when JPH_DEBUG_RENDERER is defined"
 #endif
 

@@ -97,7 +97,7 @@
 #include <Jolt/Physics/Vehicle/MotorcycleController.h>
 #include <Jolt/Physics/Vehicle/TrackedVehicleController.h>
 
-#ifdef JPH_DEBUG_RENDERER
+#ifdef JOLTC_DEBUG_RENDERER
 #include <Jolt/Renderer/DebugRenderer.h>
 #include <Jolt/Renderer/DebugRendererSimple.h>
 #endif
@@ -219,7 +219,7 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastResult, JPH::RayCastResult);
 DEFINE_CONVERSION_FUNCTIONS(JPH_BroadPhaseCastResult, JPH::BroadPhaseCastResult);
 DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastSettings, JPH::RayCastSettings);
 
-#ifdef JPH_DEBUG_RENDERER
+#ifdef JOLTC_DEBUG_RENDERER
 
 DEFINE_CONVERSION_FUNCTIONS(JPH_DebugRenderer, JPH::DebugRenderer);
 DEFINE_CONVERSION_FUNCTIONS(JPH_BodyDrawFilter, JPH::BodyDrawFilter);

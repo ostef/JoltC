@@ -9,6 +9,6 @@
 #include <JoltC_System.h>
 #include <JoltC_Shapes.h>
 
-#ifdef JPH_DEBUG_RENDERER
+#ifdef JOLTC_DEBUG_RENDERER
 #include <JoltC_DebugRenderer.h>
 #endif

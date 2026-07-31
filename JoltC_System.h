@@ -3,7 +3,7 @@
 #include <JoltC_Core.h>
 #include <JoltC_Body.h>
 #include <JoltC_Collision.h>
-#ifdef JPH_DEBUG_RENDERER
+#ifdef JOLTC_DEBUG_RENDERER
 #include <JoltC_DebugRenderer.h>
 #endif
 
@@ -63,7 +63,7 @@ enum JPH_EPhysicsUpdateErrorFlags_ {
 
 JOLTC_API JPH_EPhysicsUpdateError JPH_PhysicsSystem_Update(JPH_PhysicsSystem *system, float deltaTime, int collisionSteps, JPH_TempAllocator *tempAllocator, JPH_JobSystem *jobSystem);
 
-#ifdef JPH_DEBUG_RENDERER
+#ifdef JOLTC_DEBUG_RENDERER
 
 JOLTC_API void JPH_PhysicsSystem_DrawBodies(JPH_PhysicsSystem *system, const JPH_BodyManager_DrawSettings *settings, JPH_DebugRenderer *renderer, const JPH_BodyDrawFilter *bodyFilter);
 JOLTC_API void JPH_PhysicsSystem_DrawConstraints(JPH_PhysicsSystem *system, JPH_DebugRenderer *renderer);

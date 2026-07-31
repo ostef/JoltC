@@ -100,7 +100,7 @@ void ABITests() {
 
     ABI_TEST(JPH_EPhysicsUpdateError, JPH::EPhysicsUpdateError);
 
-#ifdef JPH_DEBUG_RENDERER
+#ifdef JOLTC_DEBUG_RENDERER
     ABI_TEST(JPH_DebugRenderer_ECastShadow, JPH::DebugRenderer::ECastShadow);
     ABI_TEST(JPH_DebugRenderer_EDrawMode, JPH::DebugRenderer::EDrawMode);
     ABI_TEST(JPH_DebugRenderer_ECullMode, JPH::DebugRenderer::ECullMode);
