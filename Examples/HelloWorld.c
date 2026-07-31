@@ -75,10 +75,15 @@ int main(int argc, char **argv) {
 
     JPH_BodyInterface *bodyInterface = JPH_PhysicsSystem_GetBodyInterface(system);
 
-    JPH_BoxShapeSettings *floorShapeSettings = JPH_BoxShapeSettings_Create();
-    JPH_BoxShapeSettings_SetHalfExtent(floorShapeSettings, JPH_Vec3_Make(100, 1, 100));
+    JPH_BoxShapeSettings floorShapeSettings = {};
+    floorShapeSettings.base.density = JPH_ConvexShapeSettings_cDefaultDensity;
+    floorShapeSettings.halfExtent = JPH_Vec3_Make(100, 1, 100);
 
-    JPH_Shape *floorShape = JPH_ShapeSettings_CreateShape(&floorShapeSettings->base.base);
+    JPH_Shape *floorShape = JPH_BoxShapeSettings_CreateShape(&floorShapeSettings);
+    if (JPH_Shape_GetRefCount(floorShape) != 1) {
+        printf("Expected a ref count of 1 for shape, got %u\n", JPH_Shape_GetRefCount(floorShape));
+        exit(1);
+    }
 
     JPH_BodyCreationSettings floorSettings = JPH_BodyCreationSettings_Default();
     floorSettings.position = JPH_RVec3_Make(0, -1, 0);
@@ -91,10 +96,15 @@ int main(int argc, char **argv) {
     JPH_BodyInterface_AddBody(bodyInterface, JPH_Body_GetID(floor), JPH_EActivation_Activate);
     printf("Created floor: %u\n", JPH_Body_GetID(floor));
 
-    JPH_SphereShapeSettings *sphereShapeSettings = JPH_SphereShapeSettings_Create();
-    JPH_SphereShapeSettings_SetRadius(sphereShapeSettings, 0.5f);
+    JPH_SphereShapeSettings sphereShapeSettings = {};
+    sphereShapeSettings.base.density = JPH_ConvexShapeSettings_cDefaultDensity;
+    sphereShapeSettings.radius = 0.5;
 
-    JPH_Shape *sphereShape = JPH_ShapeSettings_CreateShape(&sphereShapeSettings->base.base);
+    JPH_Shape *sphereShape = JPH_SphereShapeSettings_CreateShape(&sphereShapeSettings);
+    if (JPH_Shape_GetRefCount(sphereShape) != 1) {
+        printf("Expected a ref count of 1 for shape, got %u\n", JPH_Shape_GetRefCount(sphereShape));
+        exit(1);
+    }
 
     JPH_BodyCreationSettings sphereSettings = JPH_BodyCreationSettings_Default();
     sphereSettings.position = JPH_RVec3_Make(0, 2, 0);
@@ -142,6 +152,9 @@ int main(int argc, char **argv) {
 
     JPH_BodyInterface_RemoveBody(bodyInterface, JPH_Body_GetID(floor));
     JPH_BodyInterface_DestroyBody(bodyInterface, JPH_Body_GetID(floor));
+
+    JPH_Shape_Release(sphereShape);
+    JPH_Shape_Release(floorShape);
 
     JPH_PhysicsSystem_Destroy(system);
 

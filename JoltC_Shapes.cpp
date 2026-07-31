@@ -2,12 +2,15 @@
 
 JOLTC_SUPPRESS_WARNINGS()
 
-void JPH_ShapeSettings_Destroy(JPH_ShapeSettings *settings) {
-    delete ToCpp(settings);
-}
+// ShapeSettings
 
-JPH_Shape *JPH_ShapeSettings_CreateShape(JPH_ShapeSettings *settings) {
-    auto result = ToCpp(settings)->Create();
+JOLTC_API JPH_Shape *JPH_EmptyShapeSettings_CreateShape(const JPH_EmptyShapeSettings *settings) {
+    JPH::EmptyShapeSettings cppSettings;
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.userData;
+    cppSettings.mCenterOfMass = ToCpp(settings->centerOfMass);
+
+    auto result = cppSettings.Create();
     if (!result.IsValid()) {
         return nullptr;
     }
@@ -15,666 +18,325 @@ JPH_Shape *JPH_ShapeSettings_CreateShape(JPH_ShapeSettings *settings) {
     auto shape = result.Get().GetPtr();
     shape->AddRef();
 
-    return reinterpret_cast<JPH_Shape *>(ToC(shape));
+    return ToC(shape);
 }
 
-void JPH_ShapeSettings_ClearCachedResult(JPH_ShapeSettings *settings) {
-    ToCpp(settings)->ClearCachedResult();
+JOLTC_API JPH_Shape *JPH_PlaneShapeSettings_CreateShape(const JPH_PlaneShapeSettings *settings) {
+    JPH::PlaneShapeSettings cppSettings;
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.userData;
+    cppSettings.mPlane = ToCpp(settings->plane);
+    cppSettings.mMaterial = ToCpp(settings->material);
+    cppSettings.mHalfExtent = settings->halfExtent;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-void JPH_ShapeSettings_SetUserData(JPH_ShapeSettings *settings, uint64_t userData) {
-    ToCpp(settings)->mUserData = userData;
+JOLTC_API JPH_Shape *JPH_MeshShapeSettings_CreateShape(const JPH_MeshShapeSettings *settings) {
+    auto vertices = JPH::VertexList(ToCpp(settings->vertices), ToCpp(settings->vertices + settings->numVertices));
+    auto triangles = JPH::IndexedTriangleList(ToCpp(settings->indexedTriangles), ToCpp(settings->indexedTriangles + settings->numIndexedTriangles));
+    auto materialsBegin = reinterpret_cast<JPH::PhysicsMaterialRefC *>(settings->materials);
+    auto materialsEnd = reinterpret_cast<JPH::PhysicsMaterialRefC *>(settings->materials + settings->numMaterials);
+    auto materials = JPH::PhysicsMaterialList(materialsBegin, materialsEnd);
+
+    auto cppSettings = JPH::MeshShapeSettings(vertices, triangles, materials);
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.userData;
+    cppSettings.mMaxTrianglesPerLeaf = settings->maxTrianglesPerLeaf;
+    cppSettings.mActiveEdgeCosThresholdAngle = settings->activeEdgeCosThresholdAngle;
+    cppSettings.mPerTriangleUserData = settings->perTriangleUserData;
+    cppSettings.mBuildQuality = static_cast<JPH::MeshShapeSettings::EBuildQuality>(settings->buildQuality);
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-uint64_t JPH_ShapeSettings_GetUserData(const JPH_ShapeSettings *settings) {
-    return ToCpp(settings)->mUserData;
+JOLTC_API JPH_Shape *JPH_HeightFieldShapeSettings_CreateShape(const JPH_HeightFieldShapeSettings *settings) {
+    auto materialsBegin = reinterpret_cast<JPH::PhysicsMaterialRefC *>(settings->materials);
+    auto materialsEnd = reinterpret_cast<JPH::PhysicsMaterialRefC *>(settings->materials + settings->numMaterials);
+    auto materials = JPH::PhysicsMaterialList(materialsBegin, materialsEnd);
+
+    auto cppSettings = JPH::HeightFieldShapeSettings(settings->heightSamples, ToCpp(settings->offset), ToCpp(settings->scale), settings->sampleCount, settings->materialIndices, materials);
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.userData;
+    cppSettings.mMinHeightValue = settings->minHeightValue;
+    cppSettings.mMaxHeightValue = settings->maxHeightValue;
+    cppSettings.mMaterialsCapacity = settings->materialsCapacity;
+    cppSettings.mBlockSize = settings->blockSize;
+    cppSettings.mBitsPerSample = settings->bitsPerSample;
+    cppSettings.mActiveEdgeCosThresholdAngle = settings->activeEdgeCosThresholdAngle;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-JPH_EmptyShapeSettings *JPH_EmptyShapeSettings_Create() {
-    return ToC(new JPH::EmptyShapeSettings);
+JPH_Shape *JPH_SphereShapeSettings_CreateShape(const JPH_SphereShapeSettings *settings) {
+    auto cppSettings = JPH::SphereShapeSettings(settings->radius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-void JPH_EmptyShapeSettings_SetCenterOfMass(JPH_EmptyShapeSettings *settings, JPH_Vec3 centerOfMass) {
-    ToCpp(settings)->mCenterOfMass = ToCpp(centerOfMass);
+JPH_Shape *JPH_BoxShapeSettings_CreateShape(const JPH_BoxShapeSettings *settings) {
+    auto cppSettings = JPH::BoxShapeSettings(ToCpp(settings->halfExtent), settings->convexRadius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-JPH_Vec3 JPH_EmptyShapeSettings_GetCenterOfMass(const JPH_EmptyShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mCenterOfMass);
+JPH_Shape *JPH_TriangleShapeSettings_CreateShape(const JPH_TriangleShapeSettings *settings) {
+    auto cppSettings = JPH::TriangleShapeSettings(ToCpp(settings->v1), ToCpp(settings->v2), ToCpp(settings->v3), settings->convexRadius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-JPH_PlaneShapeSettings *JPH_PlaneShapeSettings_Create() {
-    return ToC(new JPH::PlaneShapeSettings);
-}
+JPH_Shape *JPH_CapsuleShapeSettings_CreateShape(const JPH_CapsuleShapeSettings *settings) {
+    auto cppSettings = JPH::CapsuleShapeSettings(settings->halfHeightOfCylinder, settings->radius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
 
-void JPH_PlaneShapeSettings_SetPlane(JPH_PlaneShapeSettings *settings, JPH_Plane plane) {
-    ToCpp(settings)->mPlane = ToCpp(plane);
-}
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
 
-JPH_Plane JPH_PlaneShapeSettings_GetPlane(const JPH_PlaneShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mPlane);
-}
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
 
-void JPH_PlaneShapeSettings_SetPhysicsMaterial(JPH_PlaneShapeSettings *settings, const JPH_PhysicsMaterial *material) {
-    ToCpp(settings)->mMaterial = ToCpp(material);
-}
-
-const JPH_PhysicsMaterial *JPH_PlaneShapeSettings_GetPhysicsMaterial(const JPH_PlaneShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mMaterial.GetPtr());
-}
-
-void JPH_PlaneShapeSettings_SetHalfExtent(JPH_PlaneShapeSettings *settings, float halfExtent) {
-    ToCpp(settings)->mHalfExtent = halfExtent;
-}
-
-float JPH_PlaneShapeSettings_GetHalfExtent(const JPH_PlaneShapeSettings *settings) {
-    return ToCpp(settings)->mHalfExtent;
-}
-
-JPH_OffsetCenterOfMassShapeSettings *JPH_OffsetCenterOfMassShapeSettings_Create() {
-    return ToC(new JPH::OffsetCenterOfMassShapeSettings);
-}
-
-void JPH_OffsetCenterOfMassShapeSettings_SetInnerShape(JPH_OffsetCenterOfMassShapeSettings *settings, const JPH_Shape *innerShape) {
-    ToCpp(settings)->mInnerShapePtr = ToCpp(innerShape);
-}
-
-const JPH_Shape *JPH_OffsetCenterOfMassShapeSettings_GetInnerShape(const JPH_OffsetCenterOfMassShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mInnerShapePtr.GetPtr());
-}
-
-void JPH_OffsetCenterOfMassShapeSettings_SetInnerShapeSettings(JPH_OffsetCenterOfMassShapeSettings *settings, const JPH_ShapeSettings *innerShapeSettings) {
-    ToCpp(settings)->mInnerShape = ToCpp(innerShapeSettings);
-}
-
-const JPH_ShapeSettings *JPH_OffsetCenterOfMassShapeSettings_GetInnerShapeSettings(const JPH_OffsetCenterOfMassShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mInnerShape.GetPtr());
-}
-
-void JPH_OffsetCenterOfMassShapeSettings_SetOffset(JPH_OffsetCenterOfMassShapeSettings *settings, JPH_Vec3 offset) {
-    ToCpp(settings)->mOffset = ToCpp(offset);
-}
-
-JPH_Vec3 JPH_OffsetCenterOfMassShapeSettings_GetOffset(const JPH_OffsetCenterOfMassShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mOffset);
-}
-
-JPH_RotatedTranslatedShapeSettings *JPH_RotatedTranslatedShapeSettings_Create() {
-    return ToC(new JPH::RotatedTranslatedShapeSettings);
-}
-
-void JPH_RotatedTranslatedShapeSettings_SetInnerShape(JPH_RotatedTranslatedShapeSettings *settings, const JPH_Shape *innerShape) {
-    ToCpp(settings)->mInnerShapePtr = ToCpp(innerShape);
-}
-
-const JPH_Shape *JPH_RotatedTranslatedShapeSettings_GetInnerShape(const JPH_RotatedTranslatedShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mInnerShapePtr.GetPtr());
-}
-
-void JPH_RotatedTranslatedShapeSettings_SetInnerShapeSettings(JPH_RotatedTranslatedShapeSettings *settings, const JPH_ShapeSettings *innerShapeSettings) {
-    ToCpp(settings)->mInnerShape = ToCpp(innerShapeSettings);
-}
-
-const JPH_ShapeSettings *JPH_RotatedTranslatedShapeSettings_GetInnerShapeSettings(const JPH_RotatedTranslatedShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mInnerShape.GetPtr());
-}
-
-void JPH_RotatedTranslatedShapeSettings_SetPosition(JPH_RotatedTranslatedShapeSettings *settings, JPH_Vec3 position) {
-    ToCpp(settings)->mPosition = ToCpp(position);
-}
-
-JPH_Vec3 JPH_RotatedTranslatedShapeSettings_GetPosition(const JPH_RotatedTranslatedShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mPosition);
-}
-
-void JPH_RotatedTranslatedShapeSettings_SetRotation(JPH_RotatedTranslatedShapeSettings *settings, JPH_Quat rotation) {
-    ToCpp(settings)->mRotation = ToCpp(rotation);
-}
-
-JPH_Quat JPH_RotatedTranslatedShapeSettings_GetRotation(const JPH_RotatedTranslatedShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mRotation);
-}
-
-JPH_ScaledShapeSettings *JPH_ScaledShapeSettings_Create() {
-    return ToC(new JPH::ScaledShapeSettings);
-}
-
-void JPH_ScaledShapeSettings_SetInnerShape(JPH_ScaledShapeSettings *settings, const JPH_Shape *innerShape) {
-    ToCpp(settings)->mInnerShapePtr = ToCpp(innerShape);
-}
-
-const JPH_Shape *JPH_ScaledShapeSettings_GetInnerShape(const JPH_ScaledShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mInnerShapePtr.GetPtr());
-}
-
-void JPH_ScaledShapeSettings_SetInnerShapeSettings(JPH_ScaledShapeSettings *settings, const JPH_ShapeSettings *innerShapeSettings) {
-    ToCpp(settings)->mInnerShape = ToCpp(innerShapeSettings);
-}
-
-const JPH_ShapeSettings *JPH_ScaledShapeSettings_GetInnerShapeSettings(const JPH_ScaledShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mInnerShape.GetPtr());
-}
-
-void JPH_ScaledShapeSettings_SetScale(JPH_ScaledShapeSettings *settings, JPH_Vec3 scale) {
-    ToCpp(settings)->mScale = ToCpp(scale);
-}
-
-JPH_Vec3 JPH_ScaledShapeSettings_GetScale(const JPH_ScaledShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mScale);
-}
-
-void JPH_CompoundShapeSettings_AddShape(JPH_CompoundShapeSettings *settings, JPH_Vec3 position, JPH_Quat rotation, const JPH_Shape *subShape, uint32_t userData) {
-    ToCpp(settings)->AddShape(ToCpp(position), ToCpp(rotation), ToCpp(subShape), userData);
-}
-
-void JPH_CompoundShapeSettings_AddShapeSettings(JPH_CompoundShapeSettings *settings, JPH_Vec3 position, JPH_Quat rotation, const JPH_ShapeSettings *subShapeSettings, uint32_t userData) {
-    ToCpp(settings)->AddShape(ToCpp(position), ToCpp(rotation), ToCpp(subShapeSettings), userData);
-}
-
-JPH_StaticCompoundShapeSettings *JPH_StaticCompoundShapeSettings_Create() {
-    return ToC(new JPH::StaticCompoundShapeSettings);
-}
-
-JPH_MutableCompoundShapeSettings *JPH_MutableCompoundShapeSettings_Create() {
-    return ToC(new JPH::MutableCompoundShapeSettings);
-}
-
-void JPH_ConvexShapeSettings_SetPhysicsMaterial(JPH_ConvexShapeSettings *settings, const JPH_PhysicsMaterial *material) {
-    ToCpp(settings)->mMaterial = ToCpp(material);
-}
-
-const JPH_PhysicsMaterial *JPH_ConvexShapeSettings_GetPhysicsMaterial(const JPH_ConvexShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mMaterial.GetPtr());
-}
-
-void JPH_ConvexShapeSettings_SetDensity(JPH_ConvexShapeSettings *settings, float density) {
-    ToCpp(settings)->mDensity = density;
-}
-
-float JPH_ConvexShapeSettings_GetDensity(const JPH_ConvexShapeSettings *settings) {
-    return ToCpp(settings)->mDensity;
-}
-
-JPH_BoxShapeSettings *JPH_BoxShapeSettings_Create() {
-    return ToC(new JPH::BoxShapeSettings);
-}
-
-void JPH_BoxShapeSettings_SetHalfExtent(JPH_BoxShapeSettings *settings, JPH_Vec3 halfExtent) {
-    ToCpp(settings)->mHalfExtent = ToCpp(halfExtent);
-}
-
-JPH_Vec3 JPH_BoxShapeSettings_GetHalfExtent(const JPH_BoxShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mHalfExtent);
-}
-
-void JPH_BoxShapeSettings_SetConvexRadius(JPH_BoxShapeSettings *settings, float convexRadius) {
-    ToCpp(settings)->mConvexRadius = convexRadius;
-}
-
-float JPH_BoxShapeSettings_GetConvexRadius(const JPH_BoxShapeSettings *settings) {
-    return ToCpp(settings)->mConvexRadius;
-}
-
-JPH_SphereShapeSettings *JPH_SphereShapeSettings_Create() {
-    return ToC(new JPH::SphereShapeSettings);
-}
-
-void JPH_SphereShapeSettings_SetRadius(JPH_SphereShapeSettings *settings, float radius) {
-    ToCpp(settings)->mRadius = radius;
-}
-
-float JPH_SphereShapeSettings_GetRadius(const JPH_SphereShapeSettings *settings) {
-    return ToCpp(settings)->mRadius;
-}
-
-JPH_CapsuleShapeSettings *JPH_CapsuleShapeSettings_Create() {
-    return ToC(new JPH::CapsuleShapeSettings);
-}
-
-void JPH_CapsuleShapeSettings_SetRadius(JPH_CapsuleShapeSettings *settings, float radius) {
-    ToCpp(settings)->mRadius = radius;
-}
-
-float JPH_CapsuleShapeSettings_GetRadius(const JPH_CapsuleShapeSettings *settings) {
-    return ToCpp(settings)->mRadius;
-}
-
-void JPH_CapsuleShapeSettings_SetHalfHeightOfCylinder(JPH_CapsuleShapeSettings *settings, float halfHeightOfCylinder) {
-    ToCpp(settings)->mHalfHeightOfCylinder = halfHeightOfCylinder;
-}
-
-float JPH_CapsuleShapeSettings_GetHalfHeightOfCylinder(const JPH_CapsuleShapeSettings *settings) {
-    return ToCpp(settings)->mHalfHeightOfCylinder;
+    return ToC(shape);
 }
 
 bool JPH_CapsuleShapeSettings_IsValid(const JPH_CapsuleShapeSettings *settings) {
-    return ToCpp(settings)->IsValid();
+    return settings->radius > 0.0f && settings->halfHeightOfCylinder >= 0.0f;
 }
 
 bool JPH_CapsuleShapeSettings_IsSphere(const JPH_CapsuleShapeSettings *settings) {
-    return ToCpp(settings)->IsSphere();
+    return settings->halfHeightOfCylinder == 0.0f;
 }
 
-JPH_TaperedCapsuleShapeSettings *JPH_TaperedCapsuleShapeSettings_Create() {
-    return ToC(new JPH::TaperedCapsuleShapeSettings);
-}
+JPH_Shape *JPH_TaperedCapsuleShapeSettings_CreateShape(const JPH_TaperedCapsuleShapeSettings *settings) {
+    auto cppSettings = JPH::TaperedCapsuleShapeSettings(settings->halfHeightOfTaperedCylinder, settings->topRadius, settings->bottomRadius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
 
-void JPH_TaperedCapsuleShapeSettings_SetHalfHeightOfTaperedCylinder(JPH_TaperedCapsuleShapeSettings *settings, float halfHeightOfTaperedCylinder) {
-    ToCpp(settings)->mHalfHeightOfTaperedCylinder = halfHeightOfTaperedCylinder;
-}
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
 
-float JPH_TaperedCapsuleShapeSettings_GetHalfHeightOfTaperedCylinder(const JPH_TaperedCapsuleShapeSettings *settings) {
-    return ToCpp(settings)->mHalfHeightOfTaperedCylinder;
-}
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
 
-void JPH_TaperedCapsuleShapeSettings_SetTopRadius(JPH_TaperedCapsuleShapeSettings *settings, float topRadius) {
-    ToCpp(settings)->mTopRadius = topRadius;
-}
-
-float JPH_TaperedCapsuleShapeSettings_GetTopRadius(const JPH_TaperedCapsuleShapeSettings *settings) {
-    return ToCpp(settings)->mTopRadius;
-}
-
-void JPH_TaperedCapsuleShapeSettings_SetBottomRadius(JPH_TaperedCapsuleShapeSettings *settings, float bottomRadius) {
-    ToCpp(settings)->mBottomRadius = bottomRadius;
-}
-
-float JPH_TaperedCapsuleShapeSettings_GetBottomRadius(const JPH_TaperedCapsuleShapeSettings *settings) {
-    return ToCpp(settings)->mBottomRadius;
+    return ToC(shape);
 }
 
 bool JPH_TaperedCapsuleShapeSettings_IsValid(const JPH_TaperedCapsuleShapeSettings *settings) {
-    return ToCpp(settings)->IsValid();
+    return settings->topRadius > 0.0f && settings->bottomRadius > 0.0f && settings->halfHeightOfTaperedCylinder >= 0.0f;
 }
 
 bool JPH_TaperedCapsuleShapeSettings_IsSphere(const JPH_TaperedCapsuleShapeSettings *settings) {
-    return ToCpp(settings)->IsSphere();
+    float minRadius = settings->topRadius > settings->bottomRadius ? settings->bottomRadius : settings->topRadius;
+    float maxRadius = settings->topRadius < settings->bottomRadius ? settings->bottomRadius : settings->topRadius;
+	return maxRadius >= 2.0f * settings->halfHeightOfTaperedCylinder + minRadius;
 }
 
-JPH_CylinderShapeSettings *JPH_CylinderShapeSettings_Create() {
-    return ToC(new JPH::CylinderShapeSettings);
-}
+JPH_Shape *JPH_CylinderShapeSettings_CreateShape(const JPH_CylinderShapeSettings *settings) {
+    auto cppSettings = JPH::CylinderShapeSettings(settings->halfHeight, settings->radius, settings->convexRadius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
 
-void JPH_CylinderShapeSettings_SetHalfHeight(JPH_CylinderShapeSettings *settings, float halfHeight) {
-    ToCpp(settings)->mHalfHeight = halfHeight;
-}
-
-float JPH_CylinderShapeSettings_GetHalfHeight(const JPH_CylinderShapeSettings *settings) {
-    return ToCpp(settings)->mHalfHeight;
-}
-
-void JPH_CylinderShapeSettings_SetRadius(JPH_CylinderShapeSettings *settings, float radius) {
-    ToCpp(settings)->mRadius = radius;
-}
-
-float JPH_CylinderShapeSettings_GetRadius(const JPH_CylinderShapeSettings *settings) {
-    return ToCpp(settings)->mRadius;
-}
-
-void JPH_CylinderShapeSettings_SetConvexRadius(JPH_CylinderShapeSettings *settings, float convexRadius) {
-    ToCpp(settings)->mConvexRadius = convexRadius;
-}
-
-float JPH_CylinderShapeSettings_GetConvexRadius(const JPH_CylinderShapeSettings *settings) {
-    return ToCpp(settings)->mConvexRadius;
-}
-
-JPH_TaperedCylinderShapeSettings *JPH_TaperedCylinderShapeSettings_Create() {
-    return ToC(new JPH::TaperedCylinderShapeSettings);
-}
-
-void JPH_TaperedCylinderShapeSettings_SetHalfHeight(JPH_TaperedCylinderShapeSettings *settings, float halfHeight) {
-    ToCpp(settings)->mHalfHeight = halfHeight;
-}
-
-float JPH_TaperedCylinderShapeSettings_GetHalfHeight(const JPH_TaperedCylinderShapeSettings *settings) {
-    return ToCpp(settings)->mHalfHeight;
-}
-
-void JPH_TaperedCylinderShapeSettings_SetTopRadius(JPH_TaperedCylinderShapeSettings *settings, float topRadius) {
-    ToCpp(settings)->mTopRadius = topRadius;
-}
-
-float JPH_TaperedCylinderShapeSettings_GetTopRadius(const JPH_TaperedCylinderShapeSettings *settings) {
-    return ToCpp(settings)->mTopRadius;
-}
-
-void JPH_TaperedCylinderShapeSettings_SetBottomRadius(JPH_TaperedCylinderShapeSettings *settings, float bottomRadius) {
-    ToCpp(settings)->mBottomRadius = bottomRadius;
-}
-
-float JPH_TaperedCylinderShapeSettings_GetBottomRadius(const JPH_TaperedCylinderShapeSettings *settings) {
-    return ToCpp(settings)->mBottomRadius;
-}
-
-void JPH_TaperedCylinderShapeSettings_SetConvexRadius(JPH_TaperedCylinderShapeSettings *settings, float convexRadius) {
-    ToCpp(settings)->mConvexRadius = convexRadius;
-}
-
-float JPH_TaperedCylinderShapeSettings_GetConvexRadius(const JPH_TaperedCylinderShapeSettings *settings) {
-    return ToCpp(settings)->mConvexRadius;
-}
-
-JPH_TriangleShapeSettings *JPH_TriangleShapeSettings_Create() {
-    return ToC(new JPH::TriangleShapeSettings);
-}
-
-void JPH_TriangleShapeSettings_SetV1(JPH_TriangleShapeSettings *settings, JPH_Vec3 v1) {
-    ToCpp(settings)->mV1 = ToCpp(v1);
-}
-
-JPH_Vec3 JPH_TriangleShapeSettings_GetV1(const JPH_TriangleShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mV1);
-}
-
-void JPH_TriangleShapeSettings_SetV2(JPH_TriangleShapeSettings *settings, JPH_Vec3 v2) {
-    ToCpp(settings)->mV2 = ToCpp(v2);
-}
-
-JPH_Vec3 JPH_TriangleShapeSettings_GetV2(const JPH_TriangleShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mV2);
-}
-
-void JPH_TriangleShapeSettings_SetV3(JPH_TriangleShapeSettings *settings, JPH_Vec3 v3) {
-    ToCpp(settings)->mV3 = ToCpp(v3);
-}
-
-JPH_Vec3 JPH_TriangleShapeSettings_GetV3(const JPH_TriangleShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mV3);
-}
-
-void JPH_TriangleShapeSettings_SetPoints(JPH_TriangleShapeSettings *settings, JPH_Vec3 v1, JPH_Vec3 v2, JPH_Vec3 v3) {
-    ToCpp(settings)->mV1 = ToCpp(v1);
-    ToCpp(settings)->mV2 = ToCpp(v2);
-    ToCpp(settings)->mV3 = ToCpp(v3);
-}
-
-void JPH_TriangleShapeSettings_GetPoints(const JPH_TriangleShapeSettings *settings, JPH_Vec3 *outV1, JPH_Vec3 *outV2, JPH_Vec3 *outV3) {
-    *outV1 = ToC(ToCpp(settings)->mV1);
-    *outV2 = ToC(ToCpp(settings)->mV2);
-    *outV3 = ToC(ToCpp(settings)->mV3);
-}
-
-void JPH_TriangleShapeSettings_SetConvexRadius(JPH_TriangleShapeSettings *settings, float convexRadius) {
-    ToCpp(settings)->mConvexRadius = convexRadius;
-}
-
-float JPH_TriangleShapeSettings_GetConvexRadius(const JPH_TriangleShapeSettings *settings) {
-    return ToCpp(settings)->mConvexRadius;
-}
-
-JPH_ConvexHullShapeSettings *JPH_ConvexHullShapeSettings_Create() {
-    return ToC(new JPH::ConvexHullShapeSettings);
-}
-
-void JPH_ConvexHullShapeSettings_AddPoints(JPH_ConvexHullShapeSettings *settings, const JPH_Vec3 *points, uint32_t count) {
-    auto &arr = ToCpp(settings)->mPoints;
-    auto *cppPoints = reinterpret_cast<const JPH::Vec3 *>(points);
-    arr.insert(arr.end(), cppPoints, cppPoints + count);
-}
-
-uint32_t JPH_ConvexHullShapeSettings_GetNumPoints(const JPH_ConvexHullShapeSettings *settings) {
-    return static_cast<uint32_t>(ToCpp(settings)->mPoints.size());
-}
-
-const JPH_Vec3 *JPH_ConvexHullShapeSettings_GetPoints(const JPH_ConvexHullShapeSettings *settings) {
-    return reinterpret_cast<const JPH_Vec3 *>(ToCpp(settings)->mPoints.data());
-}
-
-void JPH_ConvexHullShapeSettings_SetMaxConvexRadius(JPH_ConvexHullShapeSettings *settings, float maxConvexRadius) {
-    ToCpp(settings)->mMaxConvexRadius = maxConvexRadius;
-}
-
-float JPH_ConvexHullShapeSettings_GetMaxConvexRadius(const JPH_ConvexHullShapeSettings *settings) {
-    return ToCpp(settings)->mMaxConvexRadius;
-}
-
-void JPH_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPH_ConvexHullShapeSettings *settings, float maxErrorConvexRadius) {
-    ToCpp(settings)->mMaxErrorConvexRadius = maxErrorConvexRadius;
-}
-
-float JPH_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPH_ConvexHullShapeSettings *settings) {
-    return ToCpp(settings)->mMaxErrorConvexRadius;
-}
-
-void JPH_ConvexHullShapeSettings_SetHullTolerance(JPH_ConvexHullShapeSettings *settings, float hullTolerance) {
-    ToCpp(settings)->mHullTolerance = hullTolerance;
-}
-
-float JPH_ConvexHullShapeSettings_GetHullTolerance(const JPH_ConvexHullShapeSettings *settings) {
-    return ToCpp(settings)->mHullTolerance;
-}
-
-JPH_MeshShapeSettings *JPH_MeshShapeSettings_Create() {
-    return ToC(new JPH::MeshShapeSettings);
-}
-
-void JPH_MeshShapeSettings_Sanitize(JPH_MeshShapeSettings *settings) {
-    ToCpp(settings)->Sanitize();
-}
-
-void JPH_MeshShapeSettings_AddVertex(JPH_MeshShapeSettings *settings, JPH_Float3 vertex) {
-    ToCpp(settings)->mTriangleVertices.push_back(*reinterpret_cast<JPH::Float3 *>(&vertex));
-}
-
-void JPH_MeshShapeSettings_AddVertices(JPH_MeshShapeSettings *settings, const JPH_Float3 *vertices, uint32_t count) {
-    auto &arr = ToCpp(settings)->mTriangleVertices;
-    auto *cppVertices = reinterpret_cast<const JPH::Float3 *>(vertices);
-    arr.insert(arr.end(), cppVertices, cppVertices + count);
-}
-
-uint32_t JPH_MeshShapeSettings_GetNumVertices(const JPH_MeshShapeSettings *settings) {
-    return static_cast<uint32_t>(ToCpp(settings)->mTriangleVertices.size());
-}
-
-const JPH_Float3 *JPH_MeshShapeSettings_GetVertices(const JPH_MeshShapeSettings *settings) {
-    return reinterpret_cast<const JPH_Float3 *>(ToCpp(settings)->mTriangleVertices.data());
-}
-
-void JPH_MeshShapeSettings_AddIndexedTriangle(JPH_MeshShapeSettings *settings, JPH_IndexedTriangle triangle) {
-    ToCpp(settings)->mIndexedTriangles.push_back(*reinterpret_cast<JPH::IndexedTriangle *>(&triangle));
-}
-
-void JPH_MeshShapeSettings_AddIndexedTriangles(JPH_MeshShapeSettings *settings, const JPH_IndexedTriangle *triangles, uint32_t count) {
-    auto &arr = ToCpp(settings)->mIndexedTriangles;
-    auto *cppTriangles = reinterpret_cast<const JPH::IndexedTriangle *>(triangles);
-    arr.insert(arr.end(), cppTriangles, cppTriangles + count);
-}
-
-uint32_t JPH_MeshShapeSettings_GetNumIndexedTriangles(const JPH_MeshShapeSettings *settings) {
-    return static_cast<uint32_t>(ToCpp(settings)->mIndexedTriangles.size());
-}
-
-const JPH_IndexedTriangle *JPH_MeshShapeSettings_GetIndexedTriangles(const JPH_MeshShapeSettings *settings) {
-    return reinterpret_cast<const JPH_IndexedTriangle *>(ToCpp(settings)->mIndexedTriangles.data());
-}
-
-void JPH_MeshShapeSettings_AddMaterial(JPH_MeshShapeSettings *settings, const JPH_PhysicsMaterial *material) {
-    ToCpp(settings)->mMaterials.push_back(ToCpp(material));
-}
-
-void JPH_MeshShapeSettings_AddMaterials(JPH_MeshShapeSettings *settings, const JPH_PhysicsMaterial **materials, uint32_t count) {
-    auto &arr = ToCpp(settings)->mMaterials;
-    for (uint32_t i = 0; i < count; i++) {
-        arr.push_back(ToCpp(materials[i]));
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
     }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-uint32_t JPH_MeshShapeSettings_GetNumMaterials(const JPH_MeshShapeSettings *settings) {
-    return static_cast<uint32_t>(ToCpp(settings)->mMaterials.size());
-}
+JPH_Shape *JPH_TaperedCylinderShapeSettings_CreateShape(const JPH_TaperedCylinderShapeSettings *settings) {
+    auto cppSettings = JPH::TaperedCylinderShapeSettings(settings->halfHeight, settings->topRadius, settings->bottomRadius, settings->convexRadius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
 
-const JPH_PhysicsMaterial *JPH_MeshShapeSettings_GetMaterial(const JPH_MeshShapeSettings *settings, uint32_t index) {
-    return ToC(ToCpp(settings)->mMaterials[index].GetPtr());
-}
-
-void JPH_MeshShapeSettings_SetMaxTrianglesPerLeaf(JPH_MeshShapeSettings *settings, uint32_t maxTrianglesPerLeaf) {
-    ToCpp(settings)->mMaxTrianglesPerLeaf = maxTrianglesPerLeaf;
-}
-
-uint32_t JPH_MeshShapeSettings_GetMaxTrianglesPerLeaf(const JPH_MeshShapeSettings *settings) {
-    return ToCpp(settings)->mMaxTrianglesPerLeaf;
-}
-
-void JPH_MeshShapeSettings_SetActiveEdgeCosThresholdAngle(JPH_MeshShapeSettings *settings, float activeEdgeCosThresholdAngle) {
-    ToCpp(settings)->mActiveEdgeCosThresholdAngle = activeEdgeCosThresholdAngle;
-}
-
-float JPH_MeshShapeSettings_GetActiveEdgeCosThresholdAngle(const JPH_MeshShapeSettings *settings) {
-    return ToCpp(settings)->mActiveEdgeCosThresholdAngle;
-}
-
-void JPH_MeshShapeSettings_SetPerTriangleUserData(JPH_MeshShapeSettings *settings, bool perTriangleUserData) {
-    ToCpp(settings)->mPerTriangleUserData = perTriangleUserData;
-}
-
-bool JPH_MeshShapeSettings_GetPerTriangleUserData(const JPH_MeshShapeSettings *settings) {
-    return ToCpp(settings)->mPerTriangleUserData;
-}
-
-void JPH_MeshShapeSettings_SetBuildQuality(JPH_MeshShapeSettings *settings, JPH_MeshShapeSettings_EBuildQuality buildQuality) {
-    ToCpp(settings)->mBuildQuality = static_cast<JPH::MeshShapeSettings::EBuildQuality>(buildQuality);
-}
-
-JPH_MeshShapeSettings_EBuildQuality JPH_MeshShapeSettings_GetBuildQuality(const JPH_MeshShapeSettings *settings) {
-    return static_cast<JPH_MeshShapeSettings_EBuildQuality>(ToCpp(settings)->mBuildQuality);
-}
-
-JPH_HeightFieldShapeSettings *JPH_HeightFieldShapeSettings_Create() {
-    return ToC(new JPH::HeightFieldShapeSettings);
-}
-
-void JPH_HeightFieldShapeSettings_DetermineMinAndMaxSample(const JPH_HeightFieldShapeSettings *settings, float *outMinValue, float *outMaxValue, float *outQuantizationScale) {
-    ToCpp(settings)->DetermineMinAndMaxSample(*outMinValue, *outMaxValue, *outQuantizationScale);
-}
-
-uint32_t JPH_HeightFieldShapeSettings_CalculateBitsPerSampleForError(const JPH_HeightFieldShapeSettings *settings, float maxError) {
-    return ToCpp(settings)->CalculateBitsPerSampleForError(maxError);
-}
-
-void JPH_HeightFieldShapeSettings_AddHeightSample(JPH_HeightFieldShapeSettings *settings, float sample) {
-    ToCpp(settings)->mHeightSamples.push_back(sample);
-}
-
-void JPH_HeightFieldShapeSettings_AddHeightSamples(JPH_HeightFieldShapeSettings *settings, const float *samples, uint32_t count) {
-    auto &arr = ToCpp(settings)->mHeightSamples;
-    arr.insert(arr.end(), samples, samples + count);
-}
-
-uint32_t JPH_HeightFieldShapeSettings_GetNumHeightSamples(const JPH_HeightFieldShapeSettings *settings) {
-    return static_cast<uint32_t>(ToCpp(settings)->mHeightSamples.size());
-}
-
-const float *JPH_HeightFieldShapeSettings_GetHeightSamples(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mHeightSamples.data();
-}
-
-void JPH_HeightFieldShapeSettings_AddMaterialIndex(JPH_HeightFieldShapeSettings *settings, uint8_t materialIndex) {
-    ToCpp(settings)->mMaterialIndices.push_back(materialIndex);
-}
-
-void JPH_HeightFieldShapeSettings_AddMaterialIndices(JPH_HeightFieldShapeSettings *settings, const uint8_t *materialIndices, uint32_t count) {
-    auto &arr = ToCpp(settings)->mMaterialIndices;
-    arr.insert(arr.end(), materialIndices, materialIndices + count);
-}
-
-uint32_t JPH_HeightFieldShapeSettings_GetNumMaterialIndices(const JPH_HeightFieldShapeSettings *settings) {
-    return static_cast<uint32_t>(ToCpp(settings)->mMaterialIndices.size());
-}
-
-const uint8_t *JPH_HeightFieldShapeSettings_GetMaterialIndices(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mMaterialIndices.data();
-}
-
-void JPH_HeightFieldShapeSettings_AddMaterial(JPH_HeightFieldShapeSettings *settings, const JPH_PhysicsMaterial *material) {
-    ToCpp(settings)->mMaterials.push_back(ToCpp(material));
-}
-
-void JPH_HeightFieldShapeSettings_AddMaterials(JPH_HeightFieldShapeSettings *settings, const JPH_PhysicsMaterial **materials, uint32_t count) {
-    auto &arr = ToCpp(settings)->mMaterials;
-    for (uint32_t i = 0; i < count; i++) {
-        arr.push_back(ToCpp(materials[i]));
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
     }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-uint32_t JPH_HeightFieldShapeSettings_GetNumMaterials(const JPH_HeightFieldShapeSettings *settings) {
-    return static_cast<uint32_t>(ToCpp(settings)->mMaterials.size());
+JPH_Shape *JPH_ConvexHullShapeSettings_CreateShape(const JPH_ConvexHullShapeSettings *settings) {
+    auto cppSettings = JPH::ConvexHullShapeSettings(ToCpp(settings->points), settings->numPoints, settings->maxConvexRadius, ToCpp(settings->base.material));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    cppSettings.mDensity = settings->base.density;
+    cppSettings.mMaxErrorConvexRadius = settings->maxErrorConvexRadius;
+    cppSettings.mHullTolerance = settings->hullTolerance;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-const JPH_PhysicsMaterial *JPH_HeightFieldShapeSettings_GetMaterial(const JPH_HeightFieldShapeSettings *settings, uint32_t index) {
-    return ToC(ToCpp(settings)->mMaterials[index].GetPtr());
+JPH_Shape *JPH_StaticCompoundShapeSettings_CreateShape(const JPH_StaticCompoundShapeSettings *settings) {
+    auto cppSettings = JPH::StaticCompoundShapeSettings();
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    for (uint32_t i = 0; i < settings->base.numSubShapes; i += 1) {
+        const auto &subShape = settings->base.subShapes[i];
+        cppSettings.AddShape(ToCpp(subShape.position), ToCpp(subShape.rotation), ToCpp(subShape.shape), subShape.userData);
+    }
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-void JPH_HeightFieldShapeSettings_SetOffset(JPH_HeightFieldShapeSettings *settings, JPH_Vec3 offset) {
-    ToCpp(settings)->mOffset = ToCpp(offset);
+JPH_Shape *JPH_MutableCompoundShapeSettings_CreateShape(const JPH_MutableCompoundShapeSettings *settings) {
+    auto cppSettings = JPH::MutableCompoundShapeSettings();
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+    for (uint32_t i = 0; i < settings->base.numSubShapes; i += 1) {
+        const auto &subShape = settings->base.subShapes[i];
+        cppSettings.AddShape(ToCpp(subShape.position), ToCpp(subShape.rotation), ToCpp(subShape.shape), subShape.userData);
+    }
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-JPH_Vec3 JPH_HeightFieldShapeSettings_GetOffset(const JPH_HeightFieldShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mOffset);
+JPH_Shape *JPH_RotatedTranslatedShapeSettings_CreateShape(const JPH_RotatedTranslatedShapeSettings *settings) {
+    auto cppSettings = JPH::RotatedTranslatedShapeSettings(ToCpp(settings->position), ToCpp(settings->rotation), ToCpp(settings->base.innerShape));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-void JPH_HeightFieldShapeSettings_SetScale(JPH_HeightFieldShapeSettings *settings, JPH_Vec3 scale) {
-    ToCpp(settings)->mScale = ToCpp(scale);
+JPH_Shape *JPH_ScaledShapeSettings_CreateShape(const JPH_ScaledShapeSettings *settings) {
+    auto cppSettings = JPH::ScaledShapeSettings(ToCpp(settings->base.innerShape), ToCpp(settings->scale));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-JPH_Vec3 JPH_HeightFieldShapeSettings_GetScale(const JPH_HeightFieldShapeSettings *settings) {
-    return ToC(ToCpp(settings)->mScale);
+JPH_Shape *JPH_OffsetCenterOfMassShapeSettings_CreateShape(const JPH_OffsetCenterOfMassShapeSettings *settings) {
+    auto cppSettings = JPH::OffsetCenterOfMassShapeSettings(ToCpp(settings->offset), ToCpp(settings->base.innerShape));
+    cppSettings.SetEmbedded();
+    cppSettings.mUserData = settings->base.base.userData;
+
+    auto result = cppSettings.Create();
+    if (!result.IsValid()) {
+        return nullptr;
+    }
+
+    auto shape = result.Get().GetPtr();
+    shape->AddRef();
+
+    return ToC(shape);
 }
 
-void JPH_HeightFieldShapeSettings_SetSampleCount(JPH_HeightFieldShapeSettings *settings, uint32_t sampleCount) {
-    ToCpp(settings)->mSampleCount = sampleCount;
-}
-
-uint32_t JPH_HeightFieldShapeSettings_GetSampleCount(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mSampleCount;
-}
-
-void JPH_HeightFieldShapeSettings_SetMinHeightValue(JPH_HeightFieldShapeSettings *settings, float minHeightValue) {
-    ToCpp(settings)->mMinHeightValue = minHeightValue;
-}
-
-float JPH_HeightFieldShapeSettings_GetMinHeightValue(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mMinHeightValue;
-}
-
-void JPH_HeightFieldShapeSettings_SetMaxHeightValue(JPH_HeightFieldShapeSettings *settings, float maxHeightValue) {
-    ToCpp(settings)->mMaxHeightValue = maxHeightValue;
-}
-
-float JPH_HeightFieldShapeSettings_GetMaxHeightValue(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mMaxHeightValue;
-}
-
-void JPH_HeightFieldShapeSettings_SetMaterialsCapacity(JPH_HeightFieldShapeSettings *settings, uint32_t materialsCapacity) {
-    ToCpp(settings)->mMaterialsCapacity = materialsCapacity;
-}
-
-uint32_t JPH_HeightFieldShapeSettings_GetMaterialsCapacity(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mMaterialsCapacity;
-}
-
-void JPH_HeightFieldShapeSettings_SetBlockSize(JPH_HeightFieldShapeSettings *settings, uint32_t blockSize) {
-    ToCpp(settings)->mBlockSize = blockSize;
-}
-
-uint32_t JPH_HeightFieldShapeSettings_GetBlockSize(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mBlockSize;
-}
-
-void JPH_HeightFieldShapeSettings_SetBitsPerSample(JPH_HeightFieldShapeSettings *settings, uint32_t bitsPerSample) {
-    ToCpp(settings)->mBitsPerSample = bitsPerSample;
-}
-
-uint32_t JPH_HeightFieldShapeSettings_GetBitsPerSample(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mBitsPerSample;
-}
-
-void JPH_HeightFieldShapeSettings_SetActiveEdgeCosThresholdAngle(JPH_HeightFieldShapeSettings *settings, float activeEdgeCosThresholdAngle) {
-    ToCpp(settings)->mActiveEdgeCosThresholdAngle = activeEdgeCosThresholdAngle;
-}
-
-float JPH_HeightFieldShapeSettings_GetActiveEdgeCosThresholdAngle(const JPH_HeightFieldShapeSettings *settings) {
-    return ToCpp(settings)->mActiveEdgeCosThresholdAngle;
-}
+// MassProperties
 
 JPH_Vec3 JPH_MassProperties_GetEquivalentSolidBoxSize(float mass, JPH_Vec3 inertiaDiagonal) {
     return ToC(JPH::MassProperties::sGetEquivalentSolidBoxSize(mass, ToCpp(inertiaDiagonal)));
@@ -704,12 +366,18 @@ void JPH_MassProperties_Scale(JPH_MassProperties *massProperties, JPH_Vec3 scale
     reinterpret_cast<JPH::MassProperties *>(massProperties)->Scale(ToCpp(scale));
 }
 
+// Shape
+
 void JPH_Shape_AddRef(JPH_Shape *shape) {
     ToCpp(shape)->AddRef();
 }
 
 void JPH_Shape_Release(JPH_Shape *shape) {
     ToCpp(shape)->Release();
+}
+
+uint32_t JPH_Shape_GetRefCount(const JPH_Shape *shape) {
+    return ToCpp(shape)->GetRefCount();
 }
 
 JPH_EShapeType JPH_Shape_GetType(const JPH_Shape *shape) {

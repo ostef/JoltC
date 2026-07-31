@@ -1,7 +1,8 @@
 #pragma once
 
-#include <stdbool.h>
+#include <stdlib.h>
 #include <stddef.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdalign.h>
 
@@ -198,6 +199,8 @@ typedef struct JPH_JobSystemThreadPool {
 typedef struct JPH_SharedMutex JPH_SharedMutex;
 
 // Math
+
+#define JPH_cLargeFloat 1.0e15f
 
 typedef struct JPH_Float3 {
     float x, y, z;
