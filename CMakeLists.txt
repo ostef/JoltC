@@ -67,6 +67,7 @@ set(JOLTC_SRC_FILES
     ${CMAKE_SOURCE_DIR}/JoltC_System.cpp
     ${CMAKE_SOURCE_DIR}/JoltC_Shapes.cpp
     ${CMAKE_SOURCE_DIR}/JoltC_Constraints.cpp
+    ${CMAKE_SOURCE_DIR}/JoltC_Character.cpp
     ${CMAKE_SOURCE_DIR}/JoltC_DebugRenderer.cpp
 )
 

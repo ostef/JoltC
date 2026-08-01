@@ -9,6 +9,7 @@
 #include <JoltC_System.h>
 #include <JoltC_Shapes.h>
 #include <JoltC_Constraints.h>
+#include <JoltC_Character.h>
 
 #ifdef JOLTC_DEBUG_RENDERER
 #include <JoltC_DebugRenderer.h>

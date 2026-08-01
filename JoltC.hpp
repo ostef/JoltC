@@ -310,3 +310,8 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_RackAndPinionConstraint, JPH::RackAndPinionConst
 DEFINE_CONVERSION_FUNCTIONS(JPH_SixDOFConstraint, JPH::SixDOFConstraint);
 DEFINE_CONVERSION_FUNCTIONS(JPH_SliderConstraint, JPH::SliderConstraint);
 DEFINE_CONVERSION_FUNCTIONS(JPH_SwingTwistConstraint, JPH::SwingTwistConstraint);
+
+// Character
+
+DEFINE_CONVERSION_FUNCTIONS(JPH_CharacterBase, JPH::CharacterBase);
+DEFINE_CONVERSION_FUNCTIONS(JPH_Character, JPH::Character);
