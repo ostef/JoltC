@@ -184,6 +184,8 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_Plane, JPH::Plane);
 DEFINE_CONVERSION_FUNCTIONS(JPH_OrientedBox, JPH::OrientedBox);
 
 DEFINE_CONVERSION_FUNCTIONS(JPH_PhysicsSystem, JPH::PhysicsSystem);
+DEFINE_CONVERSION_FUNCTIONS(JPH_PhysicsStepListener, JPH::PhysicsStepListener);
+DEFINE_CONVERSION_FUNCTIONS(JPH_PhysicsStepListenerContext, JPH::PhysicsStepListenerContext);
 DEFINE_CONVERSION_FUNCTIONS(JPH_BodyInterface, JPH::BodyInterface);
 DEFINE_CONVERSION_FUNCTIONS(JPH_BodyLockInterface, JPH::BodyLockInterface);
 DEFINE_CONVERSION_FUNCTIONS(JPH_TempAllocator, JPH::TempAllocator);

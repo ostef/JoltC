@@ -192,6 +192,26 @@ void JPH_PhysicsSystem_RemoveConstraints(JPH_PhysicsSystem *system, JPH_Constrai
     ToCpp(system)->RemoveConstraints(reinterpret_cast<JPH::Constraint **>(constraints), numConstraints);
 }
 
+BEGIN_INTERFACE_WRAPPER_CLASS(PhysicsStepListener);
+
+    virtual void OnStep(const JPH::PhysicsStepListenerContext &context) override {
+        if (funcs.OnStep) {
+            funcs.OnStep(data, &ToC(context));
+        }
+    }
+
+END_INTERFACE_WRAPPER_CLASS();
+
+DEFINE_INTERFACE_WRAPPER_FUNCTIONS(PhysicsStepListener);
+
+void JPH_PhysicsSystem_AddStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener) {
+    ToCpp(system)->AddStepListener(ToCpp(listener));
+}
+
+void JPH_PhysicsSystem_RemoveStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener) {
+    ToCpp(system)->RemoveStepListener(ToCpp(listener));
+}
+
 void JPH_PhysicsSystem_OptimizeBroadPhase(JPH_PhysicsSystem *system) {
     ToCpp(system)->OptimizeBroadPhase();
 }

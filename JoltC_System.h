@@ -59,8 +59,24 @@ JOLTC_API void JPH_PhysicsSystem_AddConstraints(JPH_PhysicsSystem *system, struc
 JOLTC_API void JPH_PhysicsSystem_RemoveConstraints(JPH_PhysicsSystem *system, struct JPH_Constraint **constraints, int numConstraints);
 // JOLTC_API void JPH_PhysicsSystem_GetConstraints(const JPH_PhysicsSystem *system, const struct JPH_Constraint **outConstraints, uint32_t *outNumConstraints);
 
-// JOLTC_API void JPH_PhysicsSystem_AddStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener);
-// JOLTC_API void JPH_PhysicsSystem_RemoveStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener);
+typedef struct JPH_PhysicsStepListenerContext {
+    float deltaTime;
+    bool isFirstStep;
+    bool isLastStep;
+    JPH_PhysicsSystem *physicsSystem;
+} JPH_PhysicsStepListenerContext;
+
+typedef struct JPH_PhysicsStepListener_Funcs {
+    void (JOLTC_CALL *Destruct)(void *data);
+    void (JOLTC_CALL *OnStep)(void *data, const JPH_PhysicsStepListenerContext *listenerContext);
+} JPH_PhysicsStepListener_Funcs;
+
+typedef struct JPH_PhysicsStepListener JPH_PhysicsStepListener;
+
+JOLTC_API JPH_PhysicsStepListener *JPH_PhysicsStepListener_Create(void *data, JPH_PhysicsStepListener_Funcs funcs, JPH_JoltCAllocator allocator);
+JOLTC_API void JPH_PhysicsStepListener_Destroy(JPH_PhysicsStepListener *listener);
+JOLTC_API void JPH_PhysicsSystem_AddStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener);
+JOLTC_API void JPH_PhysicsSystem_RemoveStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener);
 
 JOLTC_API void JPH_PhysicsSystem_OptimizeBroadPhase(JPH_PhysicsSystem *system);
 
