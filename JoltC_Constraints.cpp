@@ -348,8 +348,8 @@ JPH_SpringSettings *JPH_DistanceConstraint_GetLimitsSpringSettings(JPH_DistanceC
     return &ToC(ToCpp(constraint)->GetLimitsSpringSettings());
 }
 
-void JPH_DistanceConstraint_SetLimitsSpringSettings(JPH_DistanceConstraint *constraint, const JPH_SpringSettings *limitsSpringSettings) {
-    ToCpp(constraint)->SetLimitsSpringSettings(*ToCpp(limitsSpringSettings));
+void JPH_DistanceConstraint_SetLimitsSpringSettings(JPH_DistanceConstraint *constraint, JPH_SpringSettings limitsSpringSettings) {
+    ToCpp(constraint)->SetLimitsSpringSettings(ToCpp(limitsSpringSettings));
 }
 
 void JPH_GearConstraint_SetConstraints(JPH_GearConstraint *constraint, const JPH_Constraint *gear1, const JPH_Constraint *gear2) {
@@ -588,8 +588,8 @@ const JPH_SpringSettings *JPH_SixDOFConstraint_GetLimitsSpringSettings(const JPH
     return &ToC(ToCpp(constraint)->GetLimitsSpringSettings(static_cast<JPH::SixDOFConstraintSettings::EAxis>(axis)));
 }
 
-void JPH_SixDOFConstraint_SetLimitsSpringSettings(JPH_SixDOFConstraint *constraint, JPH_SixDOFConstraintSettings_EAxis axis, const JPH_SpringSettings *limitsSpringSettings) {
-    ToCpp(constraint)->SetLimitsSpringSettings(static_cast<JPH::SixDOFConstraintSettings::EAxis>(axis), *ToCpp(limitsSpringSettings));
+void JPH_SixDOFConstraint_SetLimitsSpringSettings(JPH_SixDOFConstraint *constraint, JPH_SixDOFConstraintSettings_EAxis axis, JPH_SpringSettings limitsSpringSettings) {
+    ToCpp(constraint)->SetLimitsSpringSettings(static_cast<JPH::SixDOFConstraintSettings::EAxis>(axis), ToCpp(limitsSpringSettings));
 }
 
 void JPH_SixDOFConstraint_SetMaxFriction(JPH_SixDOFConstraint *constraint, JPH_SixDOFConstraintSettings_EAxis axis, float friction) {
@@ -724,8 +724,8 @@ JPH_SpringSettings *JPH_SliderConstraint_GetLimitsSpringSettings(JPH_SliderConst
     return &ToC(ToCpp(constraint)->GetLimitsSpringSettings());
 }
 
-void JPH_SliderConstraint_SetLimitsSpringSettings(JPH_SliderConstraint *constraint, const JPH_SpringSettings *limitsSpringSettings) {
-    ToCpp(constraint)->SetLimitsSpringSettings(*ToCpp(limitsSpringSettings));
+void JPH_SliderConstraint_SetLimitsSpringSettings(JPH_SliderConstraint *constraint, JPH_SpringSettings limitsSpringSettings) {
+    ToCpp(constraint)->SetLimitsSpringSettings(ToCpp(limitsSpringSettings));
 }
 
 JPH_Vec3 JPH_SwingTwistConstraint_GetLocalSpacePosition1(const JPH_SwingTwistConstraint *constraint) {
