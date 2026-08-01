@@ -225,6 +225,12 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastResult, JPH::RayCastResult);
 DEFINE_CONVERSION_FUNCTIONS(JPH_BroadPhaseCastResult, JPH::BroadPhaseCastResult);
 DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastSettings, JPH::RayCastSettings);
 DEFINE_CONVERSION_FUNCTIONS(JPH_AABoxCast, JPH::AABoxCast);
+DEFINE_CONVERSION_FUNCTIONS(JPH_RShapeCast, JPH::RShapeCast);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CollideShapeSettings, JPH::CollideShapeSettings);
+DEFINE_CONVERSION_FUNCTIONS(JPH_ShapeCastSettings, JPH::ShapeCastSettings);
+DEFINE_CONVERSION_FUNCTIONS(JPH_ShapeCastResult, JPH::ShapeCastResult);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CollidePointResult, JPH::CollidePointResult);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CollideShapeResult, JPH::CollideShapeResult);
 
 DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastBodyCollector, JPH::RayCastBodyCollector);
 DEFINE_CONVERSION_FUNCTIONS(JPH_CastShapeBodyCollector, JPH::CastShapeBodyCollector);
@@ -268,6 +274,8 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_RotatedTranslatedShape, JPH::RotatedTranslatedSh
 DEFINE_CONVERSION_FUNCTIONS(JPH_ScaledShape, JPH::ScaledShape);
 DEFINE_CONVERSION_FUNCTIONS(JPH_OffsetCenterOfMassShape, JPH::OffsetCenterOfMassShape);
 DEFINE_CONVERSION_FUNCTIONS(JPH_EmptyShape, JPH::EmptyShape);
+
+DEFINE_CONVERSION_FUNCTIONS(JPH_TransformedShape, JPH::TransformedShape);
 
 // Body
 

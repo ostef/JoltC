@@ -553,3 +553,19 @@ JOLTC_API float JPH_HeightFieldShape_GetMinHeightValue(const JPH_HeightFieldShap
 JOLTC_API float JPH_HeightFieldShape_GetMaxHeightValue(const JPH_HeightFieldShape *shape);
 JOLTC_API void JPH_HeightFieldShape_GetHeights(const JPH_HeightFieldShape *shape, uint32_t x, uint32_t y, uint32_t sizeX, uint32_t sizeY, float *outHeights, intptr_t heightsStride);
 JOLTC_API void JPH_HeightFieldShape_SetHeights(JPH_HeightFieldShape *shape, uint32_t x, uint32_t y, uint32_t sizeX, uint32_t sizeY, const float *inHeights, intptr_t heightsStride, JPH_TempAllocator *allocator, float activeEdgeCosThresholdAngle);
+
+// TransformedShape
+
+typedef struct JPH_SubShapeIDCreator {
+    JPH_SubShapeID id;
+    uint32_t currentBit;
+} JPH_SubShapeIDCreator;
+
+typedef struct JPH_TransformedShape {
+    JPH_RVec3 shapePositionCOM;
+    JPH_Quat shapeRotation;
+    const JPH_Shape *shape;
+    JPH_Float3 shapeScale;
+    JPH_BodyID bodyID;
+    JPH_SubShapeIDCreator subShapeIDCreator;
+} JPH_TransformedShape;

@@ -76,6 +76,41 @@ void ABITests() {
     ABI_TEST_OFFSET_OF(JPH_RayCastResult, fraction, JPH::RayCastResult, mFraction);
     ABI_TEST_OFFSET_OF(JPH_RayCastResult, subShapeID2, JPH::RayCastResult, mSubShapeID2);
 
+    ABI_TEST(JPH_CollideShapeResult_Face, JPH::CollideShapeResult::Face);
+
+    ABI_TEST(JPH_CollideShapeResult, JPH::CollideShapeResult);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, contactPointOn1, JPH::CollideShapeResult, mContactPointOn1);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, contactPointOn2, JPH::CollideShapeResult, mContactPointOn2);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, penetrationAxis, JPH::CollideShapeResult, mPenetrationAxis);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, penetrationDepth, JPH::CollideShapeResult, mPenetrationDepth);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, subShapeID1, JPH::CollideShapeResult, mSubShapeID1);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, subShapeID2, JPH::CollideShapeResult, mSubShapeID2);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, bodyID2, JPH::CollideShapeResult, mBodyID2);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, shape1Face, JPH::CollideShapeResult, mShape1Face);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeResult, shape2Face, JPH::CollideShapeResult, mShape2Face);
+
+    ABI_TEST(JPH_ShapeCastSettings, JPH::ShapeCastSettings);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, activeEdgeMode, JPH::ShapeCastSettings, mActiveEdgeMode);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, collectFacesMode, JPH::ShapeCastSettings, mCollectFacesMode);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, collisionTolerance, JPH::ShapeCastSettings, mCollisionTolerance);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, penetrationTolerance, JPH::ShapeCastSettings, mPenetrationTolerance);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, activeEdgeMovementDirection, JPH::ShapeCastSettings, mActiveEdgeMovementDirection);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, extraConvexRadius, JPH::ShapeCastSettings, mExtraConvexRadius);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, backFaceModeTriangles, JPH::ShapeCastSettings, mBackFaceModeTriangles);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, backFaceModeConvex, JPH::ShapeCastSettings, mBackFaceModeConvex);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, useShrunkenShapeAndConvexRadius, JPH::ShapeCastSettings, mUseShrunkenShapeAndConvexRadius);
+    ABI_TEST_OFFSET_OF(JPH_ShapeCastSettings, returnDeepestPoint, JPH::ShapeCastSettings, mReturnDeepestPoint);
+
+    ABI_TEST(JPH_CollideShapeSettings, JPH::CollideShapeSettings);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, activeEdgeMode, JPH::CollideShapeSettings, mActiveEdgeMode);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, collectFacesMode, JPH::CollideShapeSettings, mCollectFacesMode);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, collisionTolerance, JPH::CollideShapeSettings, mCollisionTolerance);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, penetrationTolerance, JPH::CollideShapeSettings, mPenetrationTolerance);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, activeEdgeMovementDirection, JPH::CollideShapeSettings, mActiveEdgeMovementDirection);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, maxSeparationDistance, JPH::CollideShapeSettings, mMaxSeparationDistance);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, backFaceMode, JPH::CollideShapeSettings, mBackFaceMode);
+    ABI_TEST_OFFSET_OF(JPH_CollideShapeSettings, internalEdgeRemovalVertexToleranceSq, JPH::CollideShapeSettings, mInternalEdgeRemovalVertexToleranceSq);
+
     ABI_TEST(JPH_IndexedTriangle, JPH::IndexedTriangle);
     ABI_TEST(JPH_MeshShapeSettings_EBuildQuality, JPH::MeshShapeSettings::EBuildQuality);
     ABI_TEST(JPH_SubShapeID, JPH::SubShapeID);
@@ -85,6 +120,18 @@ void ABITests() {
     ABI_TEST(JPH_Shape_SupportingFace, JPH::Shape::SupportingFace);
     ABI_TEST(JPH_Shape_GetTrianglesContext, JPH::Shape::GetTrianglesContext);
     ABI_TEST(JPH_Shape_Stats, JPH::Shape::Stats);
+
+    ABI_TEST(JPH_SubShapeIDCreator, JPH::SubShapeIDCreator);
+    // ABI_TEST_OFFSET_OF(JPH_SubShapeIDCreator, id, JPH::SubShapeIDCreator, mId);
+    // ABI_TEST_OFFSET_OF(JPH_SubShapeIDCreator, currentBit, JPH::SubShapeIDCreator, mCurrentBit);
+
+    ABI_TEST(JPH_TransformedShape, JPH::TransformedShape);
+    ABI_TEST_OFFSET_OF(JPH_TransformedShape, shapePositionCOM, JPH::TransformedShape, mShapePositionCOM);
+    ABI_TEST_OFFSET_OF(JPH_TransformedShape, shapeRotation, JPH::TransformedShape, mShapeRotation);
+    ABI_TEST_OFFSET_OF(JPH_TransformedShape, shape, JPH::TransformedShape, mShape);
+    ABI_TEST_OFFSET_OF(JPH_TransformedShape, shapeScale, JPH::TransformedShape, mShapeScale);
+    ABI_TEST_OFFSET_OF(JPH_TransformedShape, bodyID, JPH::TransformedShape, mBodyID);
+    ABI_TEST_OFFSET_OF(JPH_TransformedShape, subShapeIDCreator, JPH::TransformedShape, mSubShapeIDCreator);
 
     ABI_TEST(JPH_BodyManager_BodyStats, JPH::BodyManager::BodyStats);
     ABI_TEST(JPH_EBodyType, JPH::EBodyType);

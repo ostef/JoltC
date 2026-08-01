@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
         ray.direction = JPH_Vec3_Make(0, 0, 50);
 
         JPH_RayCastResult rayCastResult = JPH_RayCastResult_Default();
-        bool hit = JPH_NarrowPhaseQuery_CastRay(query, ray, &rayCastResult, NULL, NULL, NULL);
+        bool hit = JPH_NarrowPhaseQuery_CastRayClosest(query, ray, &rayCastResult, NULL, NULL, NULL);
 
         if (hit) {
             JPH_Vec3 hitPoint = JPH_RRayCast_GetPointOnRay(&ray, rayCastResult.fraction);

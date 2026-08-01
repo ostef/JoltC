@@ -465,8 +465,12 @@ void JPH_BroadPhaseQuery_CastAABox(const JPH_BroadPhaseQuery *query, JPH_AABoxCa
 }
 
 DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastRayCollector, RayCastResult);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastShapeCollector, ShapeCastResult);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollidePointCollector, CollidePointResult);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollideShapeCollector, CollideShapeResult);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(TransformedShapeCollector, TransformedShape);
 
-bool JPH_NarrowPhaseQuery_CastRay(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, JPH_RayCastResult *ioHit, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter) {
+bool JPH_NarrowPhaseQuery_CastRayClosest(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, JPH_RayCastResult *ioHit, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter) {
     JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;
     if (!broadPhaseLayerFilter) {
         broadPhaseLayerFilter = ToC(&defaultBroadPhaseLayerFilter);
@@ -483,6 +487,150 @@ bool JPH_NarrowPhaseQuery_CastRay(const JPH_NarrowPhaseQuery *query, JPH_RRayCas
     }
 
     return ToCpp(query)->CastRay(ToCpp(ray), *ToCpp(ioHit), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter), *ToCpp(bodyFilter));
+}
+
+void JPH_NarrowPhaseQuery_CastRay(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, JPH_RayCastSettings settings, JPH_CastRayCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const JPH_ShapeFilter *shapeFilter) {
+    JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;
+    if (!broadPhaseLayerFilter) {
+        broadPhaseLayerFilter = ToC(&defaultBroadPhaseLayerFilter);
+    }
+
+    JPH::ObjectLayerFilter defaultObjectLayerFilter;
+    if (!objectLayerFilter) {
+        objectLayerFilter = ToC(&defaultObjectLayerFilter);
+    }
+
+    JPH::BodyFilter defaultBodyFilter;
+    if (!bodyFilter) {
+        bodyFilter = ToC(&defaultBodyFilter);
+    }
+
+    JPH::ShapeFilter defaultShapeFilter;
+    if (!shapeFilter) {
+        shapeFilter = ToC(&defaultShapeFilter);
+    }
+
+    ToCpp(query)->CastRay(ToCpp(ray), ToCpp(settings), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter), *ToCpp(bodyFilter), *ToCpp(shapeFilter));
+}
+
+void JPH_NarrowPhaseQuery_CollidePoint(const JPH_NarrowPhaseQuery *query, JPH_RVec3 point, JPH_CollidePointCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const JPH_ShapeFilter *shapeFilter) {
+    JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;
+    if (!broadPhaseLayerFilter) {
+        broadPhaseLayerFilter = ToC(&defaultBroadPhaseLayerFilter);
+    }
+
+    JPH::ObjectLayerFilter defaultObjectLayerFilter;
+    if (!objectLayerFilter) {
+        objectLayerFilter = ToC(&defaultObjectLayerFilter);
+    }
+
+    JPH::BodyFilter defaultBodyFilter;
+    if (!bodyFilter) {
+        bodyFilter = ToC(&defaultBodyFilter);
+    }
+
+    JPH::ShapeFilter defaultShapeFilter;
+    if (!shapeFilter) {
+        shapeFilter = ToC(&defaultShapeFilter);
+    }
+
+    ToCpp(query)->CollidePoint(ToCpp(point), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter), *ToCpp(bodyFilter), *ToCpp(shapeFilter));
+}
+
+void JPH_NarrowPhaseQuery_CollideShape(const JPH_NarrowPhaseQuery *query, const JPH_Shape *shape, JPH_Vec3 shapeScale, JPH_RMat44 centerOfMassTransform, JPH_CollideShapeSettings settings, JPH_RVec3 baseOffset, JPH_CollideShapeCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const JPH_ShapeFilter *shapeFilter) {
+    JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;
+    if (!broadPhaseLayerFilter) {
+        broadPhaseLayerFilter = ToC(&defaultBroadPhaseLayerFilter);
+    }
+
+    JPH::ObjectLayerFilter defaultObjectLayerFilter;
+    if (!objectLayerFilter) {
+        objectLayerFilter = ToC(&defaultObjectLayerFilter);
+    }
+
+    JPH::BodyFilter defaultBodyFilter;
+    if (!bodyFilter) {
+        bodyFilter = ToC(&defaultBodyFilter);
+    }
+
+    JPH::ShapeFilter defaultShapeFilter;
+    if (!shapeFilter) {
+        shapeFilter = ToC(&defaultShapeFilter);
+    }
+
+    ToCpp(query)->CollideShape(ToCpp(shape), ToCpp(shapeScale), ToCpp(centerOfMassTransform), ToCpp(settings), ToCpp(baseOffset), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter), *ToCpp(bodyFilter), *ToCpp(shapeFilter));
+}
+
+void JPH_NarrowPhaseQuery_CollideShapeWithInternalEdgeRemoval(const JPH_NarrowPhaseQuery *query, const JPH_Shape *shape, JPH_Vec3 shapeScale, JPH_RMat44 centerOfMassTransform, JPH_CollideShapeSettings settings, JPH_RVec3 baseOffset, JPH_CollideShapeCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const JPH_ShapeFilter *shapeFilter) {
+    JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;
+    if (!broadPhaseLayerFilter) {
+        broadPhaseLayerFilter = ToC(&defaultBroadPhaseLayerFilter);
+    }
+
+    JPH::ObjectLayerFilter defaultObjectLayerFilter;
+    if (!objectLayerFilter) {
+        objectLayerFilter = ToC(&defaultObjectLayerFilter);
+    }
+
+    JPH::BodyFilter defaultBodyFilter;
+    if (!bodyFilter) {
+        bodyFilter = ToC(&defaultBodyFilter);
+    }
+
+    JPH::ShapeFilter defaultShapeFilter;
+    if (!shapeFilter) {
+        shapeFilter = ToC(&defaultShapeFilter);
+    }
+
+    ToCpp(query)->CollideShapeWithInternalEdgeRemoval(ToCpp(shape), ToCpp(shapeScale), ToCpp(centerOfMassTransform), ToCpp(settings), ToCpp(baseOffset), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter), *ToCpp(bodyFilter), *ToCpp(shapeFilter));
+}
+
+void JPH_NarrowPhaseQuery_CastShape(const JPH_NarrowPhaseQuery *query, JPH_RShapeCast shapeCast, JPH_ShapeCastSettings settings, JPH_RVec3 baseOffset, JPH_CastShapeCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const JPH_ShapeFilter *shapeFilter) {
+    JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;
+    if (!broadPhaseLayerFilter) {
+        broadPhaseLayerFilter = ToC(&defaultBroadPhaseLayerFilter);
+    }
+
+    JPH::ObjectLayerFilter defaultObjectLayerFilter;
+    if (!objectLayerFilter) {
+        objectLayerFilter = ToC(&defaultObjectLayerFilter);
+    }
+
+    JPH::BodyFilter defaultBodyFilter;
+    if (!bodyFilter) {
+        bodyFilter = ToC(&defaultBodyFilter);
+    }
+
+    JPH::ShapeFilter defaultShapeFilter;
+    if (!shapeFilter) {
+        shapeFilter = ToC(&defaultShapeFilter);
+    }
+
+    ToCpp(query)->CastShape(ToCpp(shapeCast), ToCpp(settings), ToCpp(baseOffset), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter), *ToCpp(bodyFilter), *ToCpp(shapeFilter));
+}
+
+void JPH_NarrowPhaseQuery_CollectTransformedShapes(const JPH_NarrowPhaseQuery *query, JPH_AABox box, JPH_TransformedShapeCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const JPH_ShapeFilter *shapeFilter) {
+    JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;
+    if (!broadPhaseLayerFilter) {
+        broadPhaseLayerFilter = ToC(&defaultBroadPhaseLayerFilter);
+    }
+
+    JPH::ObjectLayerFilter defaultObjectLayerFilter;
+    if (!objectLayerFilter) {
+        objectLayerFilter = ToC(&defaultObjectLayerFilter);
+    }
+
+    JPH::BodyFilter defaultBodyFilter;
+    if (!bodyFilter) {
+        bodyFilter = ToC(&defaultBodyFilter);
+    }
+
+    JPH::ShapeFilter defaultShapeFilter;
+    if (!shapeFilter) {
+        shapeFilter = ToC(&defaultShapeFilter);
+    }
+
+    ToCpp(query)->CollectTransformedShapes(ToCpp(box), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter), *ToCpp(bodyFilter), *ToCpp(shapeFilter));
 }
 
 JOLTC_POP_WARNINGS()
