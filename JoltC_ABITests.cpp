@@ -100,6 +100,12 @@ void ABITests() {
 
     ABI_TEST(JPH_EPhysicsUpdateError, JPH::EPhysicsUpdateError);
 
+    ABI_TEST(JPH_PhysicsStepListenerContext, JPH::PhysicsStepListenerContext);
+    ABI_TEST_OFFSET_OF(JPH_PhysicsStepListenerContext, deltaTime, JPH::PhysicsStepListenerContext, mDeltaTime);
+    ABI_TEST_OFFSET_OF(JPH_PhysicsStepListenerContext, isFirstStep, JPH::PhysicsStepListenerContext, mIsFirstStep);
+    ABI_TEST_OFFSET_OF(JPH_PhysicsStepListenerContext, isLastStep, JPH::PhysicsStepListenerContext, mIsLastStep);
+    ABI_TEST_OFFSET_OF(JPH_PhysicsStepListenerContext, physicsSystem, JPH::PhysicsStepListenerContext, mPhysicsSystem);
+
 #ifdef JOLTC_DEBUG_RENDERER
     ABI_TEST(JPH_DebugRenderer_ECastShadow, JPH::DebugRenderer::ECastShadow);
     ABI_TEST(JPH_DebugRenderer_EDrawMode, JPH::DebugRenderer::EDrawMode);

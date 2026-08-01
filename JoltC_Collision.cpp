@@ -309,7 +309,78 @@ JPH_AABox JPH_BroadPhaseQuery_GetBounds(const JPH_BroadPhaseQuery *query) {
     return ToC(ToCpp(query)->GetBounds());
 }
 
-bool JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast ray, JPH_ECollisionCollectorType collectorType, void *data, JPH_BroadPhaseQuery_CastRayHitCallback callback, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
+#define DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(name, result_type) \
+    class name##Wrapper final : public JPH::name { \
+    private: \
+        void *data; \
+        JPH_CollisionCollector_##result_type##_Funcs funcs; \
+        JPH_JoltCAllocator allocator; \
+    \
+    public: \
+        void operator delete (void *ptr) noexcept                { JPH_JoltCAllocator allocator = reinterpret_cast<name##Wrapper *>(ptr)->allocator; JPH_JoltCAllocator_Free(allocator, ptr); } \
+        void operator delete (void *ptr, size_t size) noexcept   { JPH_JoltCAllocator allocator = reinterpret_cast<name##Wrapper *>(ptr)->allocator; JPH_JoltCAllocator_Free(allocator, ptr); } \
+        void operator delete[] (void *ptr) noexcept              { JPH_JoltCAllocator allocator = reinterpret_cast<name##Wrapper *>(ptr)->allocator; JPH_JoltCAllocator_Free(allocator, ptr); } \
+        void operator delete[] (void *ptr, size_t size) noexcept { JPH_JoltCAllocator allocator = reinterpret_cast<name##Wrapper *>(ptr)->allocator; JPH_JoltCAllocator_Free(allocator, ptr); } \
+    \
+        name##Wrapper(void *data, JPH_CollisionCollector_##result_type##_Funcs funcs, JPH_JoltCAllocator allocator) \
+            : data(data), funcs(funcs), allocator(allocator) { \
+        } \
+    \
+        name##Wrapper() = delete; \
+        name##Wrapper(const name##Wrapper &) = delete; \
+        name##Wrapper &operator=(const name##Wrapper &) = delete; \
+    \
+        virtual ~name##Wrapper() override { \
+            if (funcs.Destruct) { \
+                funcs.Destruct(data); \
+            } \
+        } \
+    \
+        virtual void Reset() override { \
+            if (funcs.Reset) { \
+                funcs.Reset(data); \
+            } \
+        } \
+    \
+        virtual void OnBody(const JPH::Body &body) override { \
+            if (funcs.OnBody) { \
+                funcs.OnBody(data, &ToC(body)); \
+            } \
+        } \
+    \
+        virtual void OnBodyEnd() override { \
+            if (funcs.OnBodyEnd) { \
+                funcs.OnBodyEnd(data); \
+            } \
+        } \
+    \
+        virtual void SetUserData(uint64_t userData) override { \
+            if (funcs.SetUserData) { \
+                funcs.SetUserData(data, userData); \
+            } \
+        } \
+    \
+        virtual void AddHit(const JPH::name::ResultType &result) override { \
+            if (funcs.AddHit) { \
+                funcs.AddHit(data, ToC(result)); \
+            } \
+        } \
+    }; \
+    \
+    JPH_##name *JPH_##name##_Create(void *data, JPH_CollisionCollector_##result_type##_Funcs funcs, JPH_JoltCAllocator allocator) { \
+        void *ptr = JPH_JoltCAllocator_Allocate(allocator, sizeof(name##Wrapper)); \
+        return ToC(new(ptr) name##Wrapper(data, funcs, allocator)); \
+    } \
+    \
+    void JPH_##name##_Destroy(JPH_##name *self) { \
+        delete ToCpp(self); \
+    }
+
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(RayCastBodyCollector, BroadPhaseCastResult);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastShapeBodyCollector, BroadPhaseCastResult);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollideShapeBodyCollector, BodyID);
+
+bool JPH_BroadPhaseQuery_CastRaySimple(const JPH_BroadPhaseQuery *query, JPH_RayCast ray, JPH_ECollisionCollectorType collectorType, void *callbackData, JPH_BroadPhaseQuery_CastRayHitCallback callback, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
     switch (collectorType) {
     case JPH_ECollisionCollectorType_AnyHit: {
         JPH::AnyHitCollisionCollector<JPH::RayCastBodyCollector> collector;
@@ -320,7 +391,7 @@ bool JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast r
             result.bodyID = collector.mHit.mBodyID.GetIndexAndSequenceNumber();
             result.fraction = collector.mHit.mFraction;
             if (callback) {
-                callback(data, &result);
+                callback(callbackData, &result);
             }
             return true;
         }
@@ -335,7 +406,7 @@ bool JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast r
             result.bodyID = collector.mHit.mBodyID.GetIndexAndSequenceNumber();
             result.fraction = collector.mHit.mFraction;
             if (callback) {
-                callback(data, &result);
+                callback(callbackData, &result);
             }
             return true;
         }
@@ -357,7 +428,7 @@ bool JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast r
                 for (const auto &hit : collector.mHits) {
                     result.bodyID = hit.mBodyID.GetIndexAndSequenceNumber();
                     result.fraction = hit.mFraction;
-                    callback(data, &result);
+                    callback(callbackData, &result);
                 }
             }
 
@@ -368,6 +439,32 @@ bool JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast r
 
     return false;
 }
+
+void JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast ray, JPH_RayCastBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
+    ToCpp(query)->CastRay(ToCpp(ray), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter));
+}
+
+void JPH_BroadPhaseQuery_CollideAABox(const JPH_BroadPhaseQuery *query, JPH_AABox box, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
+    ToCpp(query)->CollideAABox(ToCpp(box), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter));
+}
+
+void JPH_BroadPhaseQuery_CollideSphere(const JPH_BroadPhaseQuery *query, JPH_Vec3 center, float radius, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
+    ToCpp(query)->CollideSphere(ToCpp(center), radius, *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter));
+}
+
+void JPH_BroadPhaseQuery_CollidePoint(const JPH_BroadPhaseQuery *query, JPH_Vec3 point, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
+    ToCpp(query)->CollidePoint(ToCpp(point), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter));
+}
+
+void JPH_BroadPhaseQuery_CollideOrientedBox(const JPH_BroadPhaseQuery *query, JPH_OrientedBox box, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
+    ToCpp(query)->CollideOrientedBox(ToCpp(box), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter));
+}
+
+void JPH_BroadPhaseQuery_CastAABox(const JPH_BroadPhaseQuery *query, JPH_AABoxCast box, JPH_CastShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
+    ToCpp(query)->CastAABox(ToCpp(box), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter));
+}
+
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastRayCollector, RayCastResult);
 
 bool JPH_NarrowPhaseQuery_CastRay(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, JPH_RayCastResult *ioHit, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter) {
     JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;

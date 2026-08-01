@@ -284,17 +284,77 @@ JOLTC_API JPH_RayCastResult JPH_RayCastResult_Default();
 typedef void (*JPH_BroadPhaseQuery_CastRayHitCallback)(void *data, const JPH_BroadPhaseCastResult *hit);
 typedef float (*JPH_BroadPhaseQuery_CastRayCollectCallback)(void *data, const JPH_BroadPhaseCastResult *hit);
 
-JOLTC_API JPH_AABox JPH_BroadPhaseQuery_GetBounds(const JPH_BroadPhaseQuery *query);
-JOLTC_API bool JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast ray, JPH_ECollisionCollectorType collectorType, void *data, JPH_BroadPhaseQuery_CastRayHitCallback callback, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+// BroadPhase collectors
 
-// JOLTC_API bool JPH_BroadPhaseQuery_CollideAABox(const JPH_BroadPhaseQuery *query, JPH_AABox box, JPH_ECollisionCollectorType collectorType, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
-// JOLTC_API bool JPH_BroadPhaseQuery_CollideSphere(const JPH_BroadPhaseQuery *query, JPH_Vec3 center, float radius, JPH_ECollisionCollectorType collectorType, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
-// JOLTC_API bool JPH_BroadPhaseQuery_CollidePoint(const JPH_BroadPhaseQuery *query, JPH_Vec3 point, JPH_ECollisionCollectorType collectorType, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
-// JOLTC_API bool JPH_BroadPhaseQuery_CollideOrientedBox(const JPH_BroadPhaseQuery *query, JPH_OrientedBox box, JPH_ECollisionCollectorType collectorType, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
-// JOLTC_API bool JPH_BroadPhaseQuery_CastAABox(const JPH_BroadPhaseQuery *query, JPH_AABoxCast box, JPH_ECollisionCollectorType collectorType, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *inObjectLayerFilter);
+#define JOLTC_COLLISION_COLLECTOR_FUNCS(ResultType) \
+    typedef struct JPH_CollisionCollector_##ResultType##_Funcs { \
+        void (JOLTC_CALL *Destruct)(void *data); \
+        void (JOLTC_CALL *Reset)(void *data); \
+        void (JOLTC_CALL *OnBody)(void *data, const struct JPH_Body *body); \
+        void (JOLTC_CALL *OnBodyEnd)(void *data); \
+        void (JOLTC_CALL *SetUserData)(void *data, uint64_t userData); \
+        void (JOLTC_CALL *AddHit)(void *data, JPH_##ResultType result); \
+    } JPH_CollisionCollector_##ResultType##_Funcs; \
+
+JOLTC_COLLISION_COLLECTOR_FUNCS(BodyID);
+JOLTC_COLLISION_COLLECTOR_FUNCS(BroadPhaseCastResult);
+JOLTC_COLLISION_COLLECTOR_FUNCS(RayCastResult);
+// JOLTC_COLLISION_COLLECTOR_FUNCS(ShapeCastResult);
+// JOLTC_COLLISION_COLLECTOR_FUNCS(CollidePointResult);
+// JOLTC_COLLISION_COLLECTOR_FUNCS(CollideShapeResult);
+// JOLTC_COLLISION_COLLECTOR_FUNCS(TransformedShape);
+
+typedef struct JPH_RayCastBodyCollector JPH_RayCastBodyCollector;
+typedef struct JPH_CastShapeBodyCollector JPH_CastShapeBodyCollector;
+typedef struct JPH_CollideShapeBodyCollector JPH_CollideShapeBodyCollector;
+
+JOLTC_API JPH_RayCastBodyCollector *JPH_RayCastBodyCollector_Create(void *data, JPH_CollisionCollector_BroadPhaseCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
+JOLTC_API void JPH_RayCastBodyCollector_Destroy(JPH_RayCastBodyCollector *self);
+
+JOLTC_API JPH_CastShapeBodyCollector *JPH_CastShapeBodyCollector_Create(void *data, JPH_CollisionCollector_BroadPhaseCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
+JOLTC_API void JPH_CastShapeBodyCollector_Destroy(JPH_CastShapeBodyCollector *self);
+
+JOLTC_API JPH_CollideShapeBodyCollector *JPH_CollideShapeBodyCollector_Create(void *data, JPH_CollisionCollector_BodyID_Funcs funcs, JPH_JoltCAllocator allocator);
+JOLTC_API void JPH_CollideShapeBodyCollector_Destroy(JPH_CollideShapeBodyCollector *self);
+
+// BroadPhaseQuery
+
+JOLTC_API JPH_AABox JPH_BroadPhaseQuery_GetBounds(const JPH_BroadPhaseQuery *query);
+JOLTC_API bool JPH_BroadPhaseQuery_CastRaySimple(const JPH_BroadPhaseQuery *query, JPH_RayCast ray, JPH_ECollisionCollectorType collectorType, void *callbackData, JPH_BroadPhaseQuery_CastRayHitCallback callback, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+JOLTC_API void JPH_BroadPhaseQuery_CastRay(const JPH_BroadPhaseQuery *query, JPH_RayCast ray, JPH_RayCastBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+JOLTC_API void JPH_BroadPhaseQuery_CollideAABox(const JPH_BroadPhaseQuery *query, JPH_AABox box, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+JOLTC_API void JPH_BroadPhaseQuery_CollideSphere(const JPH_BroadPhaseQuery *query, JPH_Vec3 center, float radius, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+JOLTC_API void JPH_BroadPhaseQuery_CollidePoint(const JPH_BroadPhaseQuery *query, JPH_Vec3 point, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+JOLTC_API void JPH_BroadPhaseQuery_CollideOrientedBox(const JPH_BroadPhaseQuery *query, JPH_OrientedBox box, JPH_CollideShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+JOLTC_API void JPH_BroadPhaseQuery_CastAABox(const JPH_BroadPhaseQuery *query, JPH_AABoxCast box, JPH_CastShapeBodyCollector *collector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter);
+
+// NarrowPhase collectors
+
+typedef struct JPH_CastRayCollector JPH_CastRayCollector;
+typedef struct JPH_CastShapeCollector JPH_CastShapeCollector;
+typedef struct JPH_CollidePointCollector JPH_CollidePointCollector;
+typedef struct JPH_CollideShapeCollector JPH_CollideShapeCollector;
+typedef struct JPH_TransformedShapeCollector JPH_TransformedShapeCollector;
+
+JOLTC_API JPH_CastRayCollector *JPH_CastRayCollector_Create(void *data, JPH_CollisionCollector_RayCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
+JOLTC_API void JPH_CastRayCollector_Destroy(JPH_CastRayCollector *self);
+
+// JOLTC_API JPH_CastShapeCollector *JPH_CastShapeCollector_Create(void *data, JPH_CollisionCollector_ShapeCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
+// JOLTC_API void JPH_CastShapeCollector_Destroy(JPH_CastShapeCollector *self);
+
+// JOLTC_API JPH_CollidePointCollector *JPH_CollidePointCollector_Create(void *data, JPH_CollisionCollector_CollidePointResult_Funcs funcs, JPH_JoltCAllocator allocator);
+// JOLTC_API void JPH_CollidePointCollector_Destroy(JPH_CollidePointCollector *self);
+
+// JOLTC_API JPH_CollideShapeColelctor *JPH_CollideShapeColelctor_Create(void *data, JPH_CollisionCollector_CollideShapeResult_Funcs funcs, JPH_JoltCAllocator allocator);
+// JOLTC_API void JPH_CollideShapeColelctor_Destroy(JPH_CollideShapeColelctor *self);
+
+// JOLTC_API JPH_TransformedShapeCollector *JPH_TransformedShapeCollector_Create(void *data, JPH_CollisionCollector_TransformedShape_Funcs funcs, JPH_JoltCAllocator allocator);
+// JOLTC_API void JPH_TransformedShapeCollector_Destroy(JPH_TransformedShapeCollector *self);
+
+// NarrowPhaseQuery
 
 JOLTC_API bool JPH_NarrowPhaseQuery_CastRay(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, JPH_RayCastResult *ioHit, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter);
-// void JPH_NarrowPhaseQuery_CastRay(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, const RayCastSettings &inRayCastSettings, CastRayCollector &ioCollector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const ShapeFilter &inShapeFilter);
+// JOLTC_API void JPH_NarrowPhaseQuery_CastRayCollect(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, JPH_RayCastSettings rayCastSettings, JPH_ECollisionCollectorType collectorType, void *callbackData, JPH_BroadPhaseQuery_CastRayHitCallback callback, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const JPH_ShapeFilter *shapeFilter);
 // void JPH_NarrowPhaseQuery_CollidePoint(const JPH_NarrowPhaseQuery *query, RVec3Arg inPoint, CollidePointCollector &ioCollector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const ShapeFilter &inShapeFilter);
 // void JPH_NarrowPhaseQuery_CollideShape(const JPH_NarrowPhaseQuery *query, const Shape *inShape, Vec3Arg inShapeScale, RMat44Arg inCenterOfMassTransform, const CollideShapeSettings &inCollideShapeSettings, RVec3Arg inBaseOffset, CollideShapeCollector &ioCollector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const ShapeFilter &inShapeFilter);
 // void JPH_NarrowPhaseQuery_CollideShapeWithInternalEdgeRemoval(const JPH_NarrowPhaseQuery *query, const Shape *inShape, Vec3Arg inShapeScale, RMat44Arg inCenterOfMassTransform, const CollideShapeSettings &inCollideShapeSettings, RVec3Arg inBaseOffset, CollideShapeCollector &ioCollector, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter, const ShapeFilter &inShapeFilter);

@@ -224,6 +224,17 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_RRayCast, JPH::RRayCast);
 DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastResult, JPH::RayCastResult);
 DEFINE_CONVERSION_FUNCTIONS(JPH_BroadPhaseCastResult, JPH::BroadPhaseCastResult);
 DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastSettings, JPH::RayCastSettings);
+DEFINE_CONVERSION_FUNCTIONS(JPH_AABoxCast, JPH::AABoxCast);
+
+DEFINE_CONVERSION_FUNCTIONS(JPH_RayCastBodyCollector, JPH::RayCastBodyCollector);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CastShapeBodyCollector, JPH::CastShapeBodyCollector);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CollideShapeBodyCollector, JPH::CollideShapeBodyCollector);
+
+DEFINE_CONVERSION_FUNCTIONS(JPH_CastRayCollector, JPH::CastRayCollector);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CastShapeCollector, JPH::CastShapeCollector);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CollidePointCollector, JPH::CollidePointCollector);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CollideShapeCollector, JPH::CollideShapeCollector);
+DEFINE_CONVERSION_FUNCTIONS(JPH_TransformedShapeCollector, JPH::TransformedShapeCollector);
 
 #ifdef JOLTC_DEBUG_RENDERER
 
@@ -261,6 +272,7 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_EmptyShape, JPH::EmptyShape);
 // Body
 
 DEFINE_CONVERSION_FUNCTIONS(JPH_Body, JPH::Body);
+DEFINE_CONVERSION_FUNCTIONS(JPH_BodyID, JPH::BodyID);
 DEFINE_CONVERSION_FUNCTIONS(JPH_MotionProperties, JPH::MotionProperties);
 
 DEFINE_CONVERSION_FUNCTIONS(JPH_IndexedTriangle, JPH::IndexedTriangle);
