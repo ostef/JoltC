@@ -51,6 +51,17 @@ JOLTC_API const JPH_ObjectLayerPairFilter *JPH_PhysicsSystem_GetObjectLayerPairF
 JOLTC_API JPH_DefaultBroadPhaseLayerFilter JPH_PhysicsSystem_GetDefaultBroadPhaseLayerFilter(const JPH_PhysicsSystem *system, JPH_ObjectLayer layer);
 JOLTC_API JPH_DefaultObjectLayerFilter JPH_PhysicsSystem_GetDefaultLayerFilter(const JPH_PhysicsSystem *system, JPH_ObjectLayer layer);
 
+struct JPH_Constraint;
+
+JOLTC_API void JPH_PhysicsSystem_AddConstraint(JPH_PhysicsSystem *system, struct JPH_Constraint *constraint);
+JOLTC_API void JPH_PhysicsSystem_RemoveConstraint(JPH_PhysicsSystem *system, struct JPH_Constraint *constraint);
+JOLTC_API void JPH_PhysicsSystem_AddConstraints(JPH_PhysicsSystem *system, struct JPH_Constraint **constraints, int numConstraints);
+JOLTC_API void JPH_PhysicsSystem_RemoveConstraints(JPH_PhysicsSystem *system, struct JPH_Constraint **constraints, int numConstraints);
+// JOLTC_API void JPH_PhysicsSystem_GetConstraints(const JPH_PhysicsSystem *system, const struct JPH_Constraint **outConstraints, uint32_t *outNumConstraints);
+
+// JOLTC_API void JPH_PhysicsSystem_AddStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener);
+// JOLTC_API void JPH_PhysicsSystem_RemoveStepListener(JPH_PhysicsSystem *system, JPH_PhysicsStepListener *listener);
+
 JOLTC_API void JPH_PhysicsSystem_OptimizeBroadPhase(JPH_PhysicsSystem *system);
 
 typedef uint32_t JPH_EPhysicsUpdateError;

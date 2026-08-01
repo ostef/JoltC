@@ -176,6 +176,22 @@ JPH_DefaultObjectLayerFilter JPH_PhysicsSystem_GetDefaultLayerFilter(const JPH_P
     return filter;
 }
 
+void JPH_PhysicsSystem_AddConstraint(JPH_PhysicsSystem *system, JPH_Constraint *constraint) {
+    ToCpp(system)->AddConstraint(ToCpp(constraint));
+}
+
+void JPH_PhysicsSystem_RemoveConstraint(JPH_PhysicsSystem *system, JPH_Constraint *constraint) {
+    ToCpp(system)->RemoveConstraint(ToCpp(constraint));
+}
+
+void JPH_PhysicsSystem_AddConstraints(JPH_PhysicsSystem *system, JPH_Constraint **constraints, int numConstraints) {
+    ToCpp(system)->AddConstraints(reinterpret_cast<JPH::Constraint **>(constraints), numConstraints);
+}
+
+void JPH_PhysicsSystem_RemoveConstraints(JPH_PhysicsSystem *system, JPH_Constraint **constraints, int numConstraints) {
+    ToCpp(system)->RemoveConstraints(reinterpret_cast<JPH::Constraint **>(constraints), numConstraints);
+}
+
 void JPH_PhysicsSystem_OptimizeBroadPhase(JPH_PhysicsSystem *system) {
     ToCpp(system)->OptimizeBroadPhase();
 }
