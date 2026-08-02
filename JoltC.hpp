@@ -315,3 +315,8 @@ DEFINE_CONVERSION_FUNCTIONS(JPH_SwingTwistConstraint, JPH::SwingTwistConstraint)
 
 DEFINE_CONVERSION_FUNCTIONS(JPH_CharacterBase, JPH::CharacterBase);
 DEFINE_CONVERSION_FUNCTIONS(JPH_Character, JPH::Character);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CharacterVirtual, JPH::CharacterVirtual);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CharacterContact, JPH::CharacterContact);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CharacterContactListener, JPH::CharacterContactListener);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CharacterContactSettings, JPH::CharacterContactSettings);
+DEFINE_CONVERSION_FUNCTIONS(JPH_CharacterVirtual_ExtendedUpdateSettings, JPH::CharacterVirtual::ExtendedUpdateSettings);

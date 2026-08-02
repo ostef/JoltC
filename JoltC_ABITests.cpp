@@ -161,6 +161,30 @@ void ABITests() {
     ABI_TEST(JPH_BodyManager_EShapeColor, JPH::BodyManager::EShapeColor);
     ABI_TEST(JPH_BodyManager_DrawSettings, JPH::BodyManager::DrawSettings);
 #endif
+
+    ABI_TEST(JPH_CharacterContact, JPH::CharacterContact);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, bodyB, JPH::CharacterContact, mBodyB);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, characterIDB, JPH::CharacterContact, mCharacterIDB);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, subShapeIDB, JPH::CharacterContact, mSubShapeIDB);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, position, JPH::CharacterContact, mPosition);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, linearVelocity, JPH::CharacterContact, mLinearVelocity);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, contactNormal, JPH::CharacterContact, mContactNormal);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, surfaceNormal, JPH::CharacterContact, mSurfaceNormal);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, distance, JPH::CharacterContact, mDistance);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, fraction, JPH::CharacterContact, mFraction);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, motionTypeB, JPH::CharacterContact, mMotionTypeB);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, isSensorB, JPH::CharacterContact, mIsSensorB);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, characterB, JPH::CharacterContact, mCharacterB);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, userData, JPH::CharacterContact, mUserData);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, material, JPH::CharacterContact, mMaterial);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, hadCollision, JPH::CharacterContact, mHadCollision);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, wasDiscarded, JPH::CharacterContact, mWasDiscarded);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, canPushCharacter, JPH::CharacterContact, mCanPushCharacter);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContact, isBackFacingContact, JPH::CharacterContact, mIsBackFacingContact);
+
+    ABI_TEST(JPH_CharacterContactSettings, JPH::CharacterContactSettings);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContactSettings, canPushCharacter, JPH::CharacterContactSettings, mCanPushCharacter);
+    ABI_TEST_OFFSET_OF(JPH_CharacterContactSettings, canReceiveImpulses, JPH::CharacterContactSettings, mCanReceiveImpulses);
 }
 
 JOLTC_POP_WARNINGS()
