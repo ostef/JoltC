@@ -292,6 +292,8 @@ JOLTC_API void JPH_BodyLockInterface_UnlockWriteAll(const JPH_BodyLockInterface 
 
 // Body
 
+JOLTC_API JPH_Body *JPH_Body_FixedToWorld();
+
 JOLTC_API JPH_BodyID JPH_Body_GetID(const JPH_Body *body);
 JOLTC_API JPH_EBodyType JPH_Body_GetBodyType(const JPH_Body *body);
 JOLTC_API bool JPH_Body_IsRigidBody(const JPH_Body *body);

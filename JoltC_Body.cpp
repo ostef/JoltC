@@ -539,6 +539,10 @@ void JPH_BodyLockInterface_UnlockWriteAll(const JPH_BodyLockInterface *bodyLockI
 
 // Body
 
+JPH_Body *JPH_Body_FixedToWorld() {
+    return &ToC(JPH::Body::sFixedToWorld);
+}
+
 JPH_BodyID JPH_Body_GetID(const JPH_Body *body) {
     return ToCpp(body)->GetID().GetIndexAndSequenceNumber();
 }
