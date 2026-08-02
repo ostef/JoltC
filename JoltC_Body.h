@@ -178,7 +178,7 @@ JOLTC_API JPH_Vec3 JPH_BodyInterface_GetAngularVelocity(const JPH_BodyInterface 
 JOLTC_API JPH_Vec3 JPH_BodyInterface_GetPointVelocity(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_RVec3 point);
 JOLTC_API void JPH_BodyInterface_SetPositionRotationAndVelocity(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_RVec3 position, JPH_Quat rotation, JPH_Vec3 linearVelocity, JPH_Vec3 angularVelocity);
 JOLTC_API JPH_Mat44 JPH_BodyInterface_GetInverseInertia(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
-JOLTC_API JPH_TransformedShape const JPH_BodyInterface_GetTransformedShape(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
+JOLTC_API JPH_TransformedShape JPH_BodyInterface_GetTransformedShape(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
 JOLTC_API uint64_t JPH_BodyInterface_GetUserData(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
 JOLTC_API void JPH_BodyInterface_SetUserData(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, uint64_t userData);
 JOLTC_API const JPH_PhysicsMaterial *JPH_BodyInterface_GetMaterial(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_SubShapeID subShapeID);
