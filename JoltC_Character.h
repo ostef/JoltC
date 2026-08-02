@@ -11,7 +11,7 @@ typedef uint32_t JPH_CharacterID;
 #define JPH_CharacterID_cInvalidCharacterID 0xffffffff
 
 typedef uint32_t JPH_ECharacterGroundState;
-enum {
+enum JPH_ECharacterGroundState_ {
     JPH_ECharacterGroundState_OnGround,
     JPH_ECharacterGroundState_OnSteepGround,
     JPH_ECharacterGroundState_NotSupported,
@@ -184,7 +184,7 @@ typedef struct JPH_CharacterVirtual_ExtendedUpdateSettings {
     JPH_Vec3 walkStairsStepDownExtra;
 } JPH_CharacterVirtual_ExtendedUpdateSettings;
 
-JOLTC_API JPH_CharacterVirtual *JPH_CharacterVirtual_Create(const JPH_CharacterSettings *settings, JPH_RVec3 position, JPH_Quat rotation, uint64_t userData, JPH_PhysicsSystem *system);
+JOLTC_API JPH_CharacterVirtual *JPH_CharacterVirtual_Create(const JPH_CharacterVirtualSettings *settings, JPH_RVec3 position, JPH_Quat rotation, uint64_t userData, JPH_PhysicsSystem *system);
 
 JOLTC_API JPH_CharacterID JPH_CharacterVirtual_GetID(const JPH_CharacterVirtual *character);
 JOLTC_API void JPH_CharacterVirtual_SetListener(JPH_CharacterVirtual *character, JPH_CharacterContactListener *listener);
