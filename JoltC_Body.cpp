@@ -156,6 +156,10 @@ JPH_Mat44 JPH_BodyInterface_GetInverseInertia(const JPH_BodyInterface *bodyInter
     return ToC(ToCpp(bodyInterface)->GetInverseInertia(JPH::BodyID(bodyID)));
 }
 
+JPH_TransformedShape JPH_BodyInterface_GetTransformedShape(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID) {
+    return ToC(ToCpp(bodyInterface)->GetTransformedShape(JPH::BodyID(bodyID)));
+}
+
 uint64_t JPH_BodyInterface_GetUserData(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID) {
     return ToCpp(bodyInterface)->GetUserData(JPH::BodyID(bodyID));
 }
@@ -833,6 +837,10 @@ void JPH_Body_SetUserData(JPH_Body *body, uint64_t userData) {
 
 JPH_Vec3 JPH_Body_GetWorldSpaceSurfaceNormal(const JPH_Body *body, JPH_SubShapeID subShapeID, JPH_RVec3 position) {
     return ToC(ToCpp(body)->GetWorldSpaceSurfaceNormal(*reinterpret_cast<const JPH::SubShapeID *>(&subShapeID), ToCpp(position)));
+}
+
+JPH_TransformedShape JPH_Body_GetTransformedShape(const JPH_Body *body) {
+    return ToC(ToCpp(body)->GetTransformedShape());
 }
 
 JPH_BodyCreationSettings JPH_Body_GetBodyCreationSettings(const JPH_Body *body) {

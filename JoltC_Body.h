@@ -178,7 +178,7 @@ JOLTC_API JPH_Vec3 JPH_BodyInterface_GetAngularVelocity(const JPH_BodyInterface 
 JOLTC_API JPH_Vec3 JPH_BodyInterface_GetPointVelocity(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_RVec3 point);
 JOLTC_API void JPH_BodyInterface_SetPositionRotationAndVelocity(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_RVec3 position, JPH_Quat rotation, JPH_Vec3 linearVelocity, JPH_Vec3 angularVelocity);
 JOLTC_API JPH_Mat44 JPH_BodyInterface_GetInverseInertia(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
-// JOLTC_API TransformedShape const JPH_BodyInterface_GetTransformedShape(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
+JOLTC_API JPH_TransformedShape const JPH_BodyInterface_GetTransformedShape(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
 JOLTC_API uint64_t JPH_BodyInterface_GetUserData(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
 JOLTC_API void JPH_BodyInterface_SetUserData(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, uint64_t userData);
 JOLTC_API const JPH_PhysicsMaterial *JPH_BodyInterface_GetMaterial(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_SubShapeID subShapeID);
@@ -364,7 +364,7 @@ JOLTC_API JPH_MotionProperties *JPH_Body_GetMotionPropertiesUnchecked(JPH_Body *
 JOLTC_API uint64_t JPH_Body_GetUserData(const JPH_Body *body);
 JOLTC_API void JPH_Body_SetUserData(JPH_Body *body, uint64_t userData);
 JOLTC_API JPH_Vec3 JPH_Body_GetWorldSpaceSurfaceNormal(const JPH_Body *body, JPH_SubShapeID subShapeID, JPH_RVec3 position);
-// JOLTC_API TransformedShape JPH_Body_GetTransformedShape(const JPH_Body *body);
+JOLTC_API JPH_TransformedShape JPH_Body_GetTransformedShape(const JPH_Body *body);
 JOLTC_API JPH_BodyCreationSettings JPH_Body_GetBodyCreationSettings(const JPH_Body *body);
 JOLTC_API void JPH_Body_ApplyBodyCreationSettings(JPH_Body *body, const JPH_BodyCreationSettings *bodyCreationSettings, const JPH_BroadPhaseLayerInterface *bplInterface);
 JOLTC_API JPH_SoftBodyCreationSettings JPH_Body_GetSoftBodyCreationSettings(const JPH_Body *body);
