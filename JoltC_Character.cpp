@@ -1,5 +1,7 @@
 #include <JoltC.hpp>
 
+JOLTC_SUPPRESS_WARNINGS()
+
 static inline
 JPH::CharacterSettings ToCpp(const JPH_CharacterSettings &settings) {
     JPH::CharacterSettings result;
@@ -552,3 +554,5 @@ bool JPH_CharacterVirtual_HasCollidedWithCharacterByID(const JPH_CharacterVirtua
 bool JPH_CharacterVirtual_HasCollidedWithCharacter(const JPH_CharacterVirtual *character, const JPH_CharacterVirtual *otherCharacter) {
     return ToCpp(character)->HasCollidedWith(ToCpp(otherCharacter));
 }
+
+JOLTC_POP_WARNINGS()

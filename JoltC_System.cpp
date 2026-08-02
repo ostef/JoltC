@@ -21,6 +21,14 @@ void JPH_PhysicsSystem_Destroy(JPH_PhysicsSystem *system) {
     delete ToCpp(system);
 }
 
+void JPH_PhysicsSystem_SetSimShapeFilter(JPH_PhysicsSystem *system, const JPH_SimShapeFilter *shapeFilter) {
+    ToCpp(system)->SetSimShapeFilter(ToCpp(shapeFilter));
+}
+
+const JPH_SimShapeFilter *JPH_PhysicsSystem_GetSimShapeFilter(const JPH_PhysicsSystem *system) {
+    return ToC(ToCpp(system)->GetSimShapeFilter());
+}
+
 void JPH_PhysicsSystem_SetPhysicsSettings(JPH_PhysicsSystem *system, JPH_PhysicsSettings settings) {
     JPH::PhysicsSettings cppSettings = {};
     memcpy(reinterpret_cast<void *>(&cppSettings), &settings, sizeof(settings));

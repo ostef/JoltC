@@ -78,6 +78,10 @@ typedef struct JPH_ReversedShapeFilter {
     JPH_ShapeFilter base;
 } JPH_ReversedShapeFilter;
 
+typedef struct JPH_SimShapeFilter {
+    char opaque;
+} JPH_SimShapeFilter;
+
 typedef struct JPH_BroadPhaseQuery  JPH_BroadPhaseQuery;
 typedef struct JPH_NarrowPhaseQuery JPH_NarrowPhaseQuery;
 
@@ -204,6 +208,14 @@ typedef struct JPH_ShapeFilter_Funcs {
 JOLTC_API JPH_ShapeFilter *JPH_ShapeFilter_Create(void *data, JPH_ShapeFilter_Funcs funcs, JPH_JoltCAllocator allocator);
 JOLTC_API void JPH_ShapeFilter_Destroy(JPH_ShapeFilter *self);
 JOLTC_API JPH_ReversedShapeFilter *JPH_ReversedShapeFilter_Create(const JPH_ShapeFilter *other, JPH_JoltCAllocator allocator);
+
+typedef struct JPH_SimShapeFilter_Funcs {
+    void (JOLTC_CALL *Destruct)(void *data);
+    bool (JOLTC_CALL *ShouldCollide)(const void *data, const struct JPH_Body *body1, const JPH_Shape *shape1, JPH_SubShapeID subShapeIDOfShape1, const struct JPH_Body *body2, const JPH_Shape *shape2, JPH_SubShapeID subShapeIDOfShape2);
+} JPH_SimShapeFilter_Funcs;
+
+JOLTC_API JPH_SimShapeFilter *JPH_SimShapeFilter_Create(void *data, JPH_SimShapeFilter_Funcs funcs, JPH_JoltCAllocator allocator);
+JOLTC_API void JPH_SimShapeFilter_Destroy(JPH_SimShapeFilter *self);
 
 // Default filters
 

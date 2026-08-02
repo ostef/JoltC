@@ -245,6 +245,19 @@ JPH_ReversedShapeFilter *JPH_ReversedShapeFilter_Create(const JPH_ShapeFilter *o
     return ToC(new(ptr) JPH::ReversedShapeFilter(*ToCpp(other)));
 }
 
+BEGIN_INTERFACE_WRAPPER_CLASS(SimShapeFilter);
+
+    virtual bool ShouldCollide(const JPH::Body &body1, const JPH::Shape *shape1, const JPH::SubShapeID &subShapeID1, const JPH::Body &body2, const JPH::Shape *shape2, const JPH::SubShapeID &subShapeID2) const override {
+        if (funcs.ShouldCollide) {
+            return funcs.ShouldCollide(data, &ToC(body1), ToC(shape1), subShapeID1.GetValue(), &ToC(body2), ToC(shape2), subShapeID2.GetValue());
+        }
+        return true;
+    }
+
+END_INTERFACE_WRAPPER_CLASS();
+
+DEFINE_INTERFACE_WRAPPER_FUNCTIONS(SimShapeFilter);
+
 // Default filters
 
 bool JPH_DefaultBroadPhaseLayerFilter_ShouldCollide(const void *data, JPH_BroadPhaseLayer layer) {

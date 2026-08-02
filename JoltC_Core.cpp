@@ -239,4 +239,22 @@ void JPH_JobSystem_Destroy(JPH_JobSystem *job_system) {
     delete ToCpp(job_system);
 }
 
+BEGIN_INTERFACE_WRAPPER_CLASS(PhysicsMaterial);
+
+    virtual const char *GetDebugName() const override {
+        if (funcs.GetDebugName) {
+            return funcs.GetDebugName(data);
+        }
+        return "";
+    }
+
+    virtual JPH::Color GetDebugColor() const override {
+        if (funcs.GetDebugColor) {
+            return JPH::Color(funcs.GetDebugColor(data));
+        }
+        return JPH::Color(0);
+    }
+
+END_INTERFACE_WRAPPER_CLASS();
+
 JOLTC_POP_WARNINGS()

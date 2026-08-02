@@ -22,6 +22,19 @@ typedef struct JPH_PhysicsSystemSettings {
 JOLTC_API JPH_PhysicsSystem *JPH_PhysicsSystem_Create(JPH_PhysicsSystemSettings settings);
 JOLTC_API void JPH_PhysicsSystem_Destroy(JPH_PhysicsSystem *system);
 
+// BodyActivationListener * GetBodyActivationListener () const
+// void SetContactListener (ContactListener *inListener)
+// ContactListener * GetContactListener () const
+// void SetSoftBodyContactListener (SoftBodyContactListener *inListener)
+// SoftBodyContactListener * GetSoftBodyContactListener () const
+
+// void SetCombineFriction (ContactConstraintManager::CombineFunction inCombineFriction)
+// ContactConstraintManager::CombineFunction GetCombineFriction () const
+// void SetCombineRestitution (ContactConstraintManager::CombineFunction inCombineRestitution)
+// ContactConstraintManager::CombineFunction GetCombineRestitution () const
+// void SetSimCollideBodyVsBody (const SimCollideBodyVsBody &inBodyVsBody)
+// const SimCollideBodyVsBody & GetSimCollideBodyVsBody () const
+
 JOLTC_API void JPH_PhysicsSystem_SetPhysicsSettings(JPH_PhysicsSystem *system, JPH_PhysicsSettings settings);
 JOLTC_API JPH_PhysicsSettings JPH_PhysicsSystem_GetPhysicsSettings(const JPH_PhysicsSystem *system);
 JOLTC_API void JPH_PhysicsSystem_SetGravity(JPH_PhysicsSystem *system, JPH_Vec3 gravity);
@@ -50,6 +63,8 @@ JOLTC_API const JPH_ObjectVsBroadPhaseLayerFilter *JPH_PhysicsSystem_GetObjectVs
 JOLTC_API const JPH_ObjectLayerPairFilter *JPH_PhysicsSystem_GetObjectLayerPairFilter(const JPH_PhysicsSystem *system);
 JOLTC_API JPH_DefaultBroadPhaseLayerFilter JPH_PhysicsSystem_GetDefaultBroadPhaseLayerFilter(const JPH_PhysicsSystem *system, JPH_ObjectLayer layer);
 JOLTC_API JPH_DefaultObjectLayerFilter JPH_PhysicsSystem_GetDefaultLayerFilter(const JPH_PhysicsSystem *system, JPH_ObjectLayer layer);
+JOLTC_API void JPH_PhysicsSystem_SetSimShapeFilter(JPH_PhysicsSystem *system, const JPH_SimShapeFilter *shapeFilter);
+JOLTC_API const JPH_SimShapeFilter *JPH_PhysicsSystem_GetSimShapeFilter(const JPH_PhysicsSystem *system);
 
 struct JPH_Constraint;
 

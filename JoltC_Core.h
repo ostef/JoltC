@@ -406,4 +406,13 @@ typedef uint32_t JPH_BodyID;
 
 #define JPH_cInvalidBodyID 0xffffffff
 
+typedef struct JPH_PhysicsMaterial_Funcs {
+    void (JOLTC_CALL *Destruct)(void *data);
+    const char *(JOLTC_CALL *GetDebugName)(const void *data);
+    JPH_Color (JOLTC_CALL *GetDebugColor)(const void *data);
+} JPH_PhysicsMaterial_Funcs;
+
 typedef struct JPH_PhysicsMaterial JPH_PhysicsMaterial;
+
+JOLTC_API JPH_PhysicsMaterial *JPH_PhysicsMaterial_Create(void *data, JPH_PhysicsMaterial_Funcs funcs, JPH_JoltCAllocator allocator);
+JOLTC_API void JPH_PhysicsMaterial_Destroy(JPH_PhysicsMaterial *self);
