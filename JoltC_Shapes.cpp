@@ -4,6 +4,20 @@ JOLTC_SUPPRESS_WARNINGS()
 
 // ShapeSettings
 
+static inline
+JPH_ShapeSettings JPH_ShapeSettings_Default() {
+    return JPH_ShapeSettings{
+        .userData=0,
+    };
+}
+
+JPH_EmptyShapeSettings JPH_EmptyShapeSettings_Default() {
+    return JPH_EmptyShapeSettings{
+        .base=JPH_ShapeSettings_Default(),
+        .centerOfMass=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+    };
+}
+
 JOLTC_API JPH_Shape *JPH_EmptyShapeSettings_CreateShape(const JPH_EmptyShapeSettings *settings) {
     JPH::EmptyShapeSettings cppSettings;
     cppSettings.SetEmbedded();
@@ -19,6 +33,15 @@ JOLTC_API JPH_Shape *JPH_EmptyShapeSettings_CreateShape(const JPH_EmptyShapeSett
     shape->AddRef();
 
     return ToC(shape);
+}
+
+JPH_PlaneShapeSettings JPH_PlaneShapeSettings_Default() {
+    return JPH_PlaneShapeSettings{
+        .base=JPH_ShapeSettings_Default(),
+        .plane=JPH_Plane_Make(JPH_Vec3_Make(0.0f, 1.0f, 0.0f), 0.0f),
+        .material=nullptr,
+        .halfExtent=JPH_PlaneShapeSettings_cDefaultHalfExtent,
+    };
 }
 
 JOLTC_API JPH_Shape *JPH_PlaneShapeSettings_CreateShape(const JPH_PlaneShapeSettings *settings) {
@@ -38,6 +61,22 @@ JOLTC_API JPH_Shape *JPH_PlaneShapeSettings_CreateShape(const JPH_PlaneShapeSett
     shape->AddRef();
 
     return ToC(shape);
+}
+
+JPH_MeshShapeSettings JPH_MeshShapeSettings_Default() {
+    return JPH_MeshShapeSettings{
+        .base=JPH_ShapeSettings_Default(),
+        .numVertices=0,
+        .vertices=nullptr,
+        .numIndexedTriangles=0,
+        .indexedTriangles=nullptr,
+        .numMaterials=0,
+        .materials=nullptr,
+        .maxTrianglesPerLeaf=JPH_MeshShapeSettings_cDefaultMaxTrianglesPerLeaf,
+        .activeEdgeCosThresholdAngle=JPH_MeshShapeSettings_cDefaultActiveEdgeCosThresholdAngle,
+        .perTriangleUserData=false,
+        .buildQuality=JPH_MeshShapeSettings_EBuildQuality_FavorRuntimePerformance,
+    };
 }
 
 JOLTC_API JPH_Shape *JPH_MeshShapeSettings_CreateShape(const JPH_MeshShapeSettings *settings) {
@@ -66,6 +105,25 @@ JOLTC_API JPH_Shape *JPH_MeshShapeSettings_CreateShape(const JPH_MeshShapeSettin
     return ToC(shape);
 }
 
+JPH_HeightFieldShapeSettings JPH_HeightFieldShapeSettings_Default() {
+    return JPH_HeightFieldShapeSettings{
+        .base=JPH_ShapeSettings_Default(),
+        .offset=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .scale=JPH_Vec3_Make(1.0f, 1.0f, 1.0f),
+        .minHeightValue=JPH_HeightFieldShapeSettings_cDefaultMinHeightValue,
+        .maxHeightValue=JPH_HeightFieldShapeSettings_cDefaultMaxHeightValue,
+        .materialsCapacity=0,
+        .blockSize=JPH_HeightFieldShapeSettings_cDefaultBlockSize,
+        .bitsPerSample=JPH_HeightFieldShapeSettings_cDefaultBitsPerSample,
+        .sampleCount=0,
+        .heightSamples=nullptr,
+        .materialIndices=nullptr,
+        .numMaterials=0,
+        .materials=nullptr,
+        .activeEdgeCosThresholdAngle=JPH_HeightFieldShapeSettings_cDefaultActiveEdgeCosThresholdAngle,
+    };
+}
+
 JOLTC_API JPH_Shape *JPH_HeightFieldShapeSettings_CreateShape(const JPH_HeightFieldShapeSettings *settings) {
     auto materialsBegin = reinterpret_cast<JPH::PhysicsMaterialRefC *>(settings->materials);
     auto materialsEnd = reinterpret_cast<JPH::PhysicsMaterialRefC *>(settings->materials + settings->numMaterials);
@@ -92,6 +150,22 @@ JOLTC_API JPH_Shape *JPH_HeightFieldShapeSettings_CreateShape(const JPH_HeightFi
     return ToC(shape);
 }
 
+static inline
+JPH_ConvexShapeSettings JPH_ConvexShapeSettings_Default() {
+    return JPH_ConvexShapeSettings{
+        .base=JPH_ShapeSettings_Default(),
+        .material=nullptr,
+        .density=JPH_ConvexShapeSettings_cDefaultDensity,
+    };
+}
+
+JPH_SphereShapeSettings JPH_SphereShapeSettings_Default() {
+    return JPH_SphereShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .radius=0.0f,
+    };
+}
+
 JPH_Shape *JPH_SphereShapeSettings_CreateShape(const JPH_SphereShapeSettings *settings) {
     auto cppSettings = JPH::SphereShapeSettings(settings->radius, ToCpp(settings->base.material));
     cppSettings.SetEmbedded();
@@ -107,6 +181,14 @@ JPH_Shape *JPH_SphereShapeSettings_CreateShape(const JPH_SphereShapeSettings *se
     shape->AddRef();
 
     return ToC(shape);
+}
+
+JPH_BoxShapeSettings JPH_BoxShapeSettings_Default() {
+    return JPH_BoxShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .halfExtent=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .convexRadius=JPH_ConvexShapeSettings_cDefaultConvexRadius,
+    };
 }
 
 JPH_Shape *JPH_BoxShapeSettings_CreateShape(const JPH_BoxShapeSettings *settings) {
@@ -126,6 +208,16 @@ JPH_Shape *JPH_BoxShapeSettings_CreateShape(const JPH_BoxShapeSettings *settings
     return ToC(shape);
 }
 
+JPH_TriangleShapeSettings JPH_TriangleShapeSettings_Default() {
+    return JPH_TriangleShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .v1=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .v2=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .v3=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .convexRadius=0.0f,
+    };
+}
+
 JPH_Shape *JPH_TriangleShapeSettings_CreateShape(const JPH_TriangleShapeSettings *settings) {
     auto cppSettings = JPH::TriangleShapeSettings(ToCpp(settings->v1), ToCpp(settings->v2), ToCpp(settings->v3), settings->convexRadius, ToCpp(settings->base.material));
     cppSettings.SetEmbedded();
@@ -141,6 +233,14 @@ JPH_Shape *JPH_TriangleShapeSettings_CreateShape(const JPH_TriangleShapeSettings
     shape->AddRef();
 
     return ToC(shape);
+}
+
+JPH_CapsuleShapeSettings JPH_CapsuleShapeSettings_Default() {
+    return JPH_CapsuleShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .radius=0.0f,
+        .halfHeightOfCylinder=0.0f,
+    };
 }
 
 JPH_Shape *JPH_CapsuleShapeSettings_CreateShape(const JPH_CapsuleShapeSettings *settings) {
@@ -166,6 +266,15 @@ bool JPH_CapsuleShapeSettings_IsValid(const JPH_CapsuleShapeSettings *settings) 
 
 bool JPH_CapsuleShapeSettings_IsSphere(const JPH_CapsuleShapeSettings *settings) {
     return settings->halfHeightOfCylinder == 0.0f;
+}
+
+JPH_TaperedCapsuleShapeSettings JPH_TaperedCapsuleShapeSettings_Default() {
+    return JPH_TaperedCapsuleShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .halfHeightOfTaperedCylinder=0.0f,
+        .topRadius=0.0f,
+        .bottomRadius=0.0f,
+    };
 }
 
 JPH_Shape *JPH_TaperedCapsuleShapeSettings_CreateShape(const JPH_TaperedCapsuleShapeSettings *settings) {
@@ -195,6 +304,15 @@ bool JPH_TaperedCapsuleShapeSettings_IsSphere(const JPH_TaperedCapsuleShapeSetti
 	return maxRadius >= 2.0f * settings->halfHeightOfTaperedCylinder + minRadius;
 }
 
+JPH_CylinderShapeSettings JPH_CylinderShapeSettings_Default() {
+    return JPH_CylinderShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .halfHeight=0.0f,
+        .radius=0.0f,
+        .convexRadius=JPH_ConvexShapeSettings_cDefaultConvexRadius,
+    };
+}
+
 JPH_Shape *JPH_CylinderShapeSettings_CreateShape(const JPH_CylinderShapeSettings *settings) {
     auto cppSettings = JPH::CylinderShapeSettings(settings->halfHeight, settings->radius, settings->convexRadius, ToCpp(settings->base.material));
     cppSettings.SetEmbedded();
@@ -210,6 +328,16 @@ JPH_Shape *JPH_CylinderShapeSettings_CreateShape(const JPH_CylinderShapeSettings
     shape->AddRef();
 
     return ToC(shape);
+}
+
+JPH_TaperedCylinderShapeSettings JPH_TaperedCylinderShapeSettings_Default() {
+    return JPH_TaperedCylinderShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .halfHeight=0.0f,
+        .topRadius=0.0f,
+        .bottomRadius=0.0f,
+        .convexRadius=JPH_ConvexShapeSettings_cDefaultConvexRadius,
+    };
 }
 
 JPH_Shape *JPH_TaperedCylinderShapeSettings_CreateShape(const JPH_TaperedCylinderShapeSettings *settings) {
@@ -229,6 +357,17 @@ JPH_Shape *JPH_TaperedCylinderShapeSettings_CreateShape(const JPH_TaperedCylinde
     return ToC(shape);
 }
 
+JPH_ConvexHullShapeSettings JPH_ConvexHullShapeSettings_Default() {
+    return JPH_ConvexHullShapeSettings{
+        .base=JPH_ConvexShapeSettings_Default(),
+        .numPoints=0,
+        .points=nullptr,
+        .maxConvexRadius=JPH_ConvexShapeSettings_cDefaultConvexRadius,
+        .maxErrorConvexRadius=JPH_ConvexHullShapeSettings_cDefaultMaxErrorConvexRadius,
+        .hullTolerance=JPH_ConvexHullShapeSettings_cDefaultHullTolerance,
+    };
+}
+
 JPH_Shape *JPH_ConvexHullShapeSettings_CreateShape(const JPH_ConvexHullShapeSettings *settings) {
     auto cppSettings = JPH::ConvexHullShapeSettings(ToCpp(settings->points), settings->numPoints, settings->maxConvexRadius, ToCpp(settings->base.material));
     cppSettings.SetEmbedded();
@@ -246,6 +385,21 @@ JPH_Shape *JPH_ConvexHullShapeSettings_CreateShape(const JPH_ConvexHullShapeSett
     shape->AddRef();
 
     return ToC(shape);
+}
+
+static inline
+JPH_CompoundShapeSettings JPH_CompoundShapeSettings_Default() {
+    return JPH_CompoundShapeSettings{
+        .base=JPH_ShapeSettings_Default(),
+        .numSubShapes=0,
+        .subShapes=nullptr,
+    };
+}
+
+JPH_StaticCompoundShapeSettings JPH_StaticCompoundShapeSettings_Default() {
+    return JPH_StaticCompoundShapeSettings{
+        .base=JPH_CompoundShapeSettings_Default(),
+    };
 }
 
 JPH_Shape *JPH_StaticCompoundShapeSettings_CreateShape(const JPH_StaticCompoundShapeSettings *settings) {
@@ -268,6 +422,12 @@ JPH_Shape *JPH_StaticCompoundShapeSettings_CreateShape(const JPH_StaticCompoundS
     return ToC(shape);
 }
 
+JPH_MutableCompoundShapeSettings JPH_MutableCompoundShapeSettings_Default() {
+    return JPH_MutableCompoundShapeSettings{
+        .base=JPH_CompoundShapeSettings_Default(),
+    };
+}
+
 JPH_Shape *JPH_MutableCompoundShapeSettings_CreateShape(const JPH_MutableCompoundShapeSettings *settings) {
     auto cppSettings = JPH::MutableCompoundShapeSettings();
     cppSettings.SetEmbedded();
@@ -288,6 +448,22 @@ JPH_Shape *JPH_MutableCompoundShapeSettings_CreateShape(const JPH_MutableCompoun
     return ToC(shape);
 }
 
+static inline
+JPH_DecoratedShapeSettings JPH_DecoratedShapeSettings_Default() {
+    return JPH_DecoratedShapeSettings{
+        .base=JPH_ShapeSettings_Default(),
+        .innerShape=nullptr,
+    };
+}
+
+JPH_RotatedTranslatedShapeSettings JPH_RotatedTranslatedShapeSettings_Default() {
+    return JPH_RotatedTranslatedShapeSettings{
+        .base=JPH_DecoratedShapeSettings_Default(),
+        .position=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .rotation=JPH_Quat_sIdentity,
+    };
+}
+
 JPH_Shape *JPH_RotatedTranslatedShapeSettings_CreateShape(const JPH_RotatedTranslatedShapeSettings *settings) {
     auto cppSettings = JPH::RotatedTranslatedShapeSettings(ToCpp(settings->position), ToCpp(settings->rotation), ToCpp(settings->base.innerShape));
     cppSettings.SetEmbedded();
@@ -304,6 +480,13 @@ JPH_Shape *JPH_RotatedTranslatedShapeSettings_CreateShape(const JPH_RotatedTrans
     return ToC(shape);
 }
 
+JPH_ScaledShapeSettings JPH_ScaledShapeSettings_Default() {
+    return JPH_ScaledShapeSettings{
+        .base=JPH_DecoratedShapeSettings_Default(),
+        .scale=JPH_Vec3_Make(1.0f, 1.0f, 1.0f),
+    };
+}
+
 JPH_Shape *JPH_ScaledShapeSettings_CreateShape(const JPH_ScaledShapeSettings *settings) {
     auto cppSettings = JPH::ScaledShapeSettings(ToCpp(settings->base.innerShape), ToCpp(settings->scale));
     cppSettings.SetEmbedded();
@@ -318,6 +501,13 @@ JPH_Shape *JPH_ScaledShapeSettings_CreateShape(const JPH_ScaledShapeSettings *se
     shape->AddRef();
 
     return ToC(shape);
+}
+
+JPH_OffsetCenterOfMassShapeSettings JPH_OffsetCenterOfMassShapeSettings_Default() {
+    return JPH_OffsetCenterOfMassShapeSettings{
+        .base=JPH_DecoratedShapeSettings_Default(),
+        .offset=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+    };
 }
 
 JPH_Shape *JPH_OffsetCenterOfMassShapeSettings_CreateShape(const JPH_OffsetCenterOfMassShapeSettings *settings) {

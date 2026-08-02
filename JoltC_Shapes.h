@@ -15,7 +15,10 @@ typedef struct JPH_EmptyShapeSettings {
     JPH_Vec3 centerOfMass;
 } JPH_EmptyShapeSettings;
 
+JOLTC_API JPH_EmptyShapeSettings JPH_EmptyShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_EmptyShapeSettings_CreateShape(const JPH_EmptyShapeSettings *settings);
+
+#define JPH_PlaneShapeSettings_cDefaultHalfExtent 1000.0f
 
 typedef struct JPH_PlaneShapeSettings {
     JPH_ShapeSettings base;
@@ -24,6 +27,7 @@ typedef struct JPH_PlaneShapeSettings {
     float halfExtent;
 } JPH_PlaneShapeSettings;
 
+JOLTC_API JPH_PlaneShapeSettings JPH_PlaneShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_PlaneShapeSettings_CreateShape(const JPH_PlaneShapeSettings *settings);
 
 typedef struct JPH_IndexedTriangle {
@@ -55,6 +59,7 @@ typedef struct JPH_MeshShapeSettings {
     JPH_MeshShapeSettings_EBuildQuality buildQuality;
 } JPH_MeshShapeSettings;
 
+JOLTC_API JPH_MeshShapeSettings JPH_MeshShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_MeshShapeSettings_CreateShape(const JPH_MeshShapeSettings *settings);
 
 #define JPH_HeightFieldShapeSettings_cDefaultMinHeightValue JPH_cLargeFloat
@@ -80,6 +85,7 @@ typedef struct JPH_HeightFieldShapeSettings {
     float activeEdgeCosThresholdAngle;
 } JPH_HeightFieldShapeSettings;
 
+JOLTC_API JPH_HeightFieldShapeSettings JPH_HeightFieldShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_HeightFieldShapeSettings_CreateShape(const JPH_HeightFieldShapeSettings *settings);
 
 // @Todo: find a way to implement these (DetermineMinAndMaxSample can be written by hand easily, not so much for the other)
@@ -87,6 +93,7 @@ JOLTC_API JPH_Shape *JPH_HeightFieldShapeSettings_CreateShape(const JPH_HeightFi
 // JOLTC_API uint32_t JPH_HeightFieldShapeSettings_CalculateBitsPerSampleForError(const JPH_HeightFieldShapeSettings *settings, float maxError);
 
 #define JPH_ConvexShapeSettings_cDefaultDensity 1000.0f
+#define JPH_ConvexShapeSettings_cDefaultConvexRadius 0.05f
 
 typedef struct JPH_ConvexShapeSettings {
     JPH_ShapeSettings base;
@@ -99,6 +106,7 @@ typedef struct JPH_SphereShapeSettings {
     float radius;
 } JPH_SphereShapeSettings;
 
+JOLTC_API JPH_SphereShapeSettings JPH_SphereShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_SphereShapeSettings_CreateShape(const JPH_SphereShapeSettings *settings);
 
 typedef struct JPH_BoxShapeSettings {
@@ -107,6 +115,7 @@ typedef struct JPH_BoxShapeSettings {
     float convexRadius;
 } JPH_BoxShapeSettings;
 
+JOLTC_API JPH_BoxShapeSettings JPH_BoxShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_BoxShapeSettings_CreateShape(const JPH_BoxShapeSettings *settings);
 
 typedef struct JPH_TriangleShapeSettings {
@@ -117,6 +126,7 @@ typedef struct JPH_TriangleShapeSettings {
     float convexRadius;
 } JPH_TriangleShapeSettings;
 
+JOLTC_API JPH_TriangleShapeSettings JPH_TriangleShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_TriangleShapeSettings_CreateShape(const JPH_TriangleShapeSettings *settings);
 
 typedef struct JPH_CapsuleShapeSettings {
@@ -125,6 +135,7 @@ typedef struct JPH_CapsuleShapeSettings {
     float halfHeightOfCylinder;
 } JPH_CapsuleShapeSettings;
 
+JOLTC_API JPH_CapsuleShapeSettings JPH_CapsuleShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_CapsuleShapeSettings_CreateShape(const JPH_CapsuleShapeSettings *settings);
 JOLTC_API bool JPH_CapsuleShapeSettings_IsValid(const JPH_CapsuleShapeSettings *settings);
 JOLTC_API bool JPH_CapsuleShapeSettings_IsSphere(const JPH_CapsuleShapeSettings *settings);
@@ -136,6 +147,7 @@ typedef struct JPH_TaperedCapsuleShapeSettings {
     float bottomRadius;
 } JPH_TaperedCapsuleShapeSettings;
 
+JOLTC_API JPH_TaperedCapsuleShapeSettings JPH_TaperedCapsuleShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_TaperedCapsuleShapeSettings_CreateShape(const JPH_TaperedCapsuleShapeSettings *settings);
 JOLTC_API bool JPH_TaperedCapsuleShapeSettings_IsValid(const JPH_TaperedCapsuleShapeSettings *settings);
 JOLTC_API bool JPH_TaperedCapsuleShapeSettings_IsSphere(const JPH_TaperedCapsuleShapeSettings *settings);
@@ -147,6 +159,7 @@ typedef struct JPH_CylinderShapeSettings {
     float convexRadius;
 } JPH_CylinderShapeSettings;
 
+JOLTC_API JPH_CylinderShapeSettings JPH_CylinderShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_CylinderShapeSettings_CreateShape(const JPH_CylinderShapeSettings *settings);
 
 typedef struct JPH_TaperedCylinderShapeSettings {
@@ -157,6 +170,7 @@ typedef struct JPH_TaperedCylinderShapeSettings {
     float convexRadius;
 } JPH_TaperedCylinderShapeSettings;
 
+JOLTC_API JPH_TaperedCylinderShapeSettings JPH_TaperedCylinderShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_TaperedCylinderShapeSettings_CreateShape(const JPH_TaperedCylinderShapeSettings *settings);
 
 #define JPH_ConvexHullShapeSettings_cDefaultMaxErrorConvexRadius 0.05f
@@ -171,6 +185,7 @@ typedef struct JPH_ConvexHullShapeSettings {
     float hullTolerance;
 } JPH_ConvexHullShapeSettings;
 
+JOLTC_API JPH_ConvexHullShapeSettings JPH_ConvexHullShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_ConvexHullShapeSettings_CreateShape(const JPH_ConvexHullShapeSettings *settings);
 
 typedef struct JPH_CompoundShapeSettings_SubShapeSettings {
@@ -190,12 +205,14 @@ typedef struct JPH_StaticCompoundShapeSettings {
     JPH_CompoundShapeSettings base;
 } JPH_StaticCompoundShapeSettings;
 
+JOLTC_API JPH_StaticCompoundShapeSettings JPH_StaticCompoundShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_StaticCompoundShapeSettings_CreateShape(const JPH_StaticCompoundShapeSettings *settings);
 
 typedef struct JPH_MutableCompoundShapeSettings {
     JPH_CompoundShapeSettings base;
 } JPH_MutableCompoundShapeSettings;
 
+JOLTC_API JPH_MutableCompoundShapeSettings JPH_MutableCompoundShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_MutableCompoundShapeSettings_CreateShape(const JPH_MutableCompoundShapeSettings *settings);
 
 typedef struct JPH_DecoratedShapeSettings {
@@ -209,6 +226,7 @@ typedef struct JPH_RotatedTranslatedShapeSettings {
     JPH_Quat rotation;
 } JPH_RotatedTranslatedShapeSettings;
 
+JOLTC_API JPH_RotatedTranslatedShapeSettings JPH_RotatedTranslatedShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_RotatedTranslatedShapeSettings_CreateShape(const JPH_RotatedTranslatedShapeSettings *settings);
 
 typedef struct JPH_ScaledShapeSettings {
@@ -216,6 +234,7 @@ typedef struct JPH_ScaledShapeSettings {
     JPH_Vec3 scale;
 } JPH_ScaledShapeSettings;
 
+JOLTC_API JPH_ScaledShapeSettings JPH_ScaledShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_ScaledShapeSettings_CreateShape(const JPH_ScaledShapeSettings *settings);
 
 typedef struct JPH_OffsetCenterOfMassShapeSettings {
@@ -223,6 +242,7 @@ typedef struct JPH_OffsetCenterOfMassShapeSettings {
     JPH_Vec3 offset;
 } JPH_OffsetCenterOfMassShapeSettings;
 
+JOLTC_API JPH_OffsetCenterOfMassShapeSettings JPH_OffsetCenterOfMassShapeSettings_Default();
 JOLTC_API JPH_Shape *JPH_OffsetCenterOfMassShapeSettings_CreateShape(const JPH_OffsetCenterOfMassShapeSettings *settings);
 
 // Shape
