@@ -59,6 +59,9 @@ typedef struct JPH_SpringSettings {
     float damping;
 } JPH_SpringSettings;
 
+JOLTC_API JPH_SpringSettings JPH_SpringSettings_Default();
+JOLTC_API JPH_SpringSettings JPH_SpringSettings_Make(JPH_ESpringMode mode, float frequencyOrStiffness, float damping);
+
 typedef uint32_t JPH_EMotorState;
 enum JPH_EMotorState_ {
     JPH_EMotorState_Off,
@@ -75,6 +78,8 @@ typedef struct JPH_MotorSettings {
     float maxTorqueLimit;
 } JPH_MotorSettings;
 
+JOLTC_API JPH_MotorSettings JPH_MotorSettings_Default();
+
 typedef struct JPH_ConstraintSettings {
     bool enabled;
     uint32_t constraintPriority;
@@ -83,10 +88,6 @@ typedef struct JPH_ConstraintSettings {
     float drawConstraintSize;
     uint64_t userData;
 } JPH_ConstraintSettings;
-
-// typedef struct JPH_VehicleConstraintSettings {
-//     JPH_ConstraintSettings base;
-// } JPH_VehicleConstraintSettings;
 
 typedef struct JPH_TwoBodyConstraintSettings {
     JPH_ConstraintSettings base;
@@ -102,6 +103,7 @@ typedef struct JPH_ConeConstraintSettings {
     float halfConeAngle;
 } JPH_ConeConstraintSettings;
 
+JOLTC_API JPH_ConeConstraintSettings JPH_ConeConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_ConeConstraintSettings_CreateConstraint(const JPH_ConeConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_DistanceConstraintSettings {
@@ -114,6 +116,7 @@ typedef struct JPH_DistanceConstraintSettings {
     JPH_SpringSettings limitsSpringSettings;
 } JPH_DistanceConstraintSettings;
 
+JOLTC_API JPH_DistanceConstraintSettings JPH_DistanceConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_DistanceConstraintSettings_CreateConstraint(const JPH_DistanceConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_FixedConstraintSettings {
@@ -128,6 +131,7 @@ typedef struct JPH_FixedConstraintSettings {
     JPH_Vec3 axisY2;
 } JPH_FixedConstraintSettings;
 
+JOLTC_API JPH_FixedConstraintSettings JPH_FixedConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_FixedConstraintSettings_CreateConstraint(const JPH_FixedConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_GearConstraintSettings {
@@ -138,6 +142,7 @@ typedef struct JPH_GearConstraintSettings {
     float ratio;
 } JPH_GearConstraintSettings;
 
+JOLTC_API JPH_GearConstraintSettings JPH_GearConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_GearConstraintSettings_CreateConstraint(const JPH_GearConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_HingeConstraintSettings {
@@ -156,6 +161,7 @@ typedef struct JPH_HingeConstraintSettings {
     JPH_MotorSettings motorSettings;
 } JPH_HingeConstraintSettings;
 
+JOLTC_API JPH_HingeConstraintSettings JPH_HingeConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_HingeConstraintSettings_CreateConstraint(const JPH_HingeConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_PathConstraintPath {
@@ -200,6 +206,7 @@ typedef struct JPH_PathConstraintSettings {
     JPH_EPathRotationConstraintType rotationConstraintType;
 } JPH_PathConstraintSettings;
 
+JOLTC_API JPH_PathConstraintSettings JPH_PathConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_PathConstraintSettings_CreateConstraint(const JPH_PathConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_PointConstraintSettings {
@@ -209,6 +216,7 @@ typedef struct JPH_PointConstraintSettings {
     JPH_RVec3 point2;
 } JPH_PointConstraintSettings;
 
+JOLTC_API JPH_PointConstraintSettings JPH_PointConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_PointConstraintSettings_CreateConstraint(const JPH_PointConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_PulleyConstraintSettings {
@@ -223,6 +231,7 @@ typedef struct JPH_PulleyConstraintSettings {
     float maxLength;
 } JPH_PulleyConstraintSettings;
 
+JOLTC_API JPH_PulleyConstraintSettings JPH_PulleyConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_PulleyConstraintSettings_CreateConstraint(const JPH_PulleyConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_RackAndPinionConstraintSettings {
@@ -233,6 +242,7 @@ typedef struct JPH_RackAndPinionConstraintSettings {
     float ratio;
 } JPH_RackAndPinionConstraintSettings;
 
+JOLTC_API JPH_RackAndPinionConstraintSettings JPH_RackAndPinionConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_RackAndPinionConstraintSettings_CreateConstraint(const JPH_RackAndPinionConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef uint32_t JPH_SixDOFConstraintSettings_EAxis;
@@ -271,6 +281,7 @@ typedef struct JPH_SixDOFConstraintSettings {
     JPH_MotorSettings motorSettings[JPH_SixDOFConstraintSettings_EAxis_Num];
 } JPH_SixDOFConstraintSettings;
 
+JOLTC_API JPH_SixDOFConstraintSettings JPH_SixDOFConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_SixDOFConstraintSettings_CreateConstraint(const JPH_SixDOFConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 JOLTC_API void JPH_SixDOFConstraintSettings_MakeFreeAxis(JPH_SixDOFConstraintSettings *settings, JPH_SixDOFConstraintSettings_EAxis axis);
 JOLTC_API bool JPH_SixDOFConstraintSettings_IsFreeAxis(const JPH_SixDOFConstraintSettings *settings, JPH_SixDOFConstraintSettings_EAxis axis);
@@ -295,6 +306,7 @@ typedef struct JPH_SliderConstraintSettings {
     JPH_MotorSettings motorSettings;
 } JPH_SliderConstraintSettings;
 
+JOLTC_API JPH_SliderConstraintSettings JPH_SliderConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_SliderConstraintSettings_CreateConstraint(const JPH_SliderConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 typedef struct JPH_SwingTwistConstraintSettings {
@@ -316,6 +328,7 @@ typedef struct JPH_SwingTwistConstraintSettings {
     JPH_MotorSettings twistMotorSettings;
 } JPH_SwingTwistConstraintSettings;
 
+JOLTC_API JPH_SwingTwistConstraintSettings JPH_SwingTwistConstraintSettings_Default();
 JOLTC_API struct JPH_TwoBodyConstraint *JPH_SwingTwistConstraintSettings_CreateConstraint(const JPH_SwingTwistConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2);
 
 // Constraint

@@ -8,6 +8,8 @@
 
 typedef uint32_t JPH_CharacterID;
 
+JOLTC_API JPH_CharacterID JPH_NextCharacterID();
+
 #define JPH_CharacterID_cInvalidCharacterID 0xffffffff
 
 typedef uint32_t JPH_ECharacterGroundState;
@@ -17,14 +19,6 @@ enum JPH_ECharacterGroundState_ {
     JPH_ECharacterGroundState_NotSupported,
     JPH_ECharacterGroundState_InAir,
 };
-
-typedef struct JPH_CharacterBaseSettings {
-    JPH_Vec3 up;
-    JPH_Plane supportingVolume;
-    float maxSlopeAngle;
-    bool enhancedInternalEdgeRemoval;
-    const JPH_Shape *shape;
-} JPH_CharacterBaseSettings;
 
 typedef struct JPH_CharacterBase {
     char opaque;
@@ -66,6 +60,8 @@ typedef struct JPH_CharacterSettings {
     JPH_EAllowedDOFs allowedDOFs;
 } JPH_CharacterSettings;
 
+JOLTC_API JPH_CharacterSettings JPH_CharacterSettings_Default();
+
 typedef struct JPH_Character {
     JPH_CharacterBase base;
 } JPH_Character;
@@ -97,10 +93,6 @@ JOLTC_API JPH_TransformedShape JPH_Character_GetTransformedShape(const JPH_Chara
 JOLTC_API void JPH_Character_CheckCollision(const JPH_Character *character, JPH_RVec3 position, JPH_Quat rotation, JPH_Vec3 movementDirection, float maxSeparationDistance, const JPH_Shape *shape, JPH_RVec3 baseOffset, JPH_CollideShapeCollector *collector, bool lockBodies);
 JOLTC_API JPH_CharacterSettings JPH_Character_GetCharacterSettings(const JPH_Character *character, bool lockBodies);
 
-typedef struct JPH_CharacterVirtual {
-    JPH_CharacterBase base;
-} JPH_CharacterVirtual;
-
 typedef struct JPH_CharacterVirtualSettings {
     // JPH_CharacterBaseSettings base
     JPH_Vec3 up;
@@ -128,6 +120,12 @@ typedef struct JPH_CharacterVirtualSettings {
     JPH_ObjectLayer innerBodyLayer;
 } JPH_CharacterVirtualSettings;
 
+JOLTC_API JPH_CharacterVirtualSettings JPH_CharacterVirtualSettings_Default();
+
+typedef struct JPH_CharacterVirtual {
+    JPH_CharacterBase base;
+} JPH_CharacterVirtual;
+
 typedef struct JPH_CharacterContact {
 	JPH_BodyID bodyB;
 	JPH_CharacterID characterIDB;
@@ -154,6 +152,8 @@ typedef struct JPH_CharacterContactSettings {
     bool canPushCharacter;
     bool canReceiveImpulses;
 } JPH_CharacterContactSettings;
+
+JOLTC_API JPH_CharacterContactSettings JPH_CharacterContactSettings_Default();
 
 typedef struct JPH_CharacterContactListener_Funcs {
     void (JOLTC_CALL *Destruct)(void *data);
@@ -183,6 +183,8 @@ typedef struct JPH_CharacterVirtual_ExtendedUpdateSettings {
     float walkStairsCosAngleForwardContact;
     JPH_Vec3 walkStairsStepDownExtra;
 } JPH_CharacterVirtual_ExtendedUpdateSettings;
+
+JOLTC_API JPH_CharacterVirtual_ExtendedUpdateSettings JPH_CharacterVirtual_ExtendedUpdateSettings_Default();
 
 JOLTC_API JPH_CharacterVirtual *JPH_CharacterVirtual_Create(const JPH_CharacterVirtualSettings *settings, JPH_RVec3 position, JPH_Quat rotation, uint64_t userData, JPH_PhysicsSystem *system);
 

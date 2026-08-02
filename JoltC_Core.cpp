@@ -77,6 +77,14 @@ bool JPH_OrientedBox_OverlapsOrientedBox(const JPH_OrientedBox *box, JPH_Oriente
     return ToCpp(box)->Overlaps(ToCpp(otherBox), epsilon);
 }
 
+float JPH_DegreesToRadians(float degrees) {
+    return JPH::DegreesToRadians(degrees);
+}
+
+float JPH_RadiansToDegrees(float radians) {
+    return JPH::RadiansToDegrees(radians);
+}
+
 // Core functions
 
 void JPH_RegisterDefaultAllocator() {
@@ -256,5 +264,7 @@ BEGIN_INTERFACE_WRAPPER_CLASS(PhysicsMaterial);
     }
 
 END_INTERFACE_WRAPPER_CLASS();
+
+DEFINE_INTERFACE_WRAPPER_FUNCTIONS(PhysicsMaterial);
 
 JOLTC_POP_WARNINGS()

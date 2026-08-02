@@ -94,6 +94,10 @@ JPH_CharacterVirtualSettings ToC(const JPH::CharacterVirtualSettings &settings) 
     return result;
 }
 
+JPH_CharacterID JPH_NextCharacterID() {
+    return JPH::CharacterID::sNextCharacterID().GetValue();
+}
+
 // CharacterBase
 
 void JPH_CharacterBase_Destroy(JPH_CharacterBase *character) {
@@ -173,6 +177,22 @@ uint64_t JPH_CharacterBase_GetGroundUserData(const JPH_CharacterBase *character)
 }
 
 // Character
+
+JPH_CharacterSettings JPH_CharacterSettings_Default() {
+    return JPH_CharacterSettings{
+        .up=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .supportingVolume=JPH_Plane_Make(JPH_Vec3_Make(0.0f, 1.0f, 0.0f), -1.0e10f),
+        .maxSlopeAngle=JPH_DegreesToRadians(50.0f),
+        .enhancedInternalEdgeRemoval=false,
+
+        .shape=nullptr,
+        .layer=0,
+        .mass=80.0f,
+        .friction=0.2f,
+        .gravityFactor=1.0f,
+        .allowedDOFs=JPH_EAllowedDOFs_TranslationX | JPH_EAllowedDOFs_TranslationY | JPH_EAllowedDOFs_TranslationZ,
+    };
+}
 
 JPH_Character *JPH_Character_Create(const JPH_CharacterSettings *settings, JPH_RVec3 position, JPH_Quat rotation, uint64_t userData, JPH_PhysicsSystem *system) {
     auto cppSettings = ToCpp(*settings);
@@ -353,6 +373,52 @@ END_INTERFACE_WRAPPER_CLASS();
 DEFINE_INTERFACE_WRAPPER_FUNCTIONS(CharacterContactListener);
 
 // CharacterVirtual
+
+JPH_CharacterVirtualSettings JPH_CharacterVirtualSettings_Default() {
+    return JPH_CharacterVirtualSettings{
+        .up=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .supportingVolume=JPH_Plane_Make(JPH_Vec3_Make(0.0f, 1.0f, 0.0f), -1.0e10f),
+        .maxSlopeAngle=JPH_DegreesToRadians(50.0f),
+        .enhancedInternalEdgeRemoval=false,
+        .shape=nullptr,
+
+        .id=JPH_NextCharacterID(),
+        .mass=80.0f,
+        .maxStrength=100.0f,
+        .shapeOffset=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .backFaceMode=JPH_EBackFaceMode_CollideWithBackFaces,
+        .predictiveContactDistance=0.1f,
+        .maxCollisionIterations=5,
+        .maxConstraintIterations=15,
+        .minTimeRemaining=1.0e-4f,
+        .collisionTolerance=1.0e-3f,
+        .characterPadding=0.02f,
+        .maxNumHits=256,
+        .hitReductionCosMaxAngle=0.999f,
+        .penetrationRecoverySpeed=1.0f,
+        .innerBodyShape=nullptr,
+        .innerBodyIDOverride=JPH_cInvalidBodyID,
+        .innerBodyLayer=0,
+    };
+}
+
+JPH_CharacterContactSettings JPH_CharacterContactSettings_Default() {
+    return JPH_CharacterContactSettings{
+        .canPushCharacter=true,
+        .canReceiveImpulses=true,
+    };
+}
+
+JPH_CharacterVirtual_ExtendedUpdateSettings JPH_CharacterVirtual_ExtendedUpdateSettings_Default() {
+    return JPH_CharacterVirtual_ExtendedUpdateSettings{
+        .stickToFloorStepDown=JPH_Vec3_Make(0.0f, -0.5f, 0.0f),
+        .walkStairsStepUp=JPH_Vec3_Make(0.0f, 0.4f, 0.0f),
+        .walkStairsMinStepForward=0.02f,
+        .walkStairsStepForwardTest=0.15f,
+        .walkStairsCosAngleForwardContact=JPH::Cos(JPH_DegreesToRadians(75.0f)), // Do not use std::cos because it's not deterministic
+        .walkStairsStepDownExtra=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+    };
+}
 
 JPH_CharacterVirtual *JPH_CharacterVirtual_Create(const JPH_CharacterVirtualSettings *settings, JPH_RVec3 position, JPH_Quat rotation, uint64_t userData, JPH_PhysicsSystem *system) {
     auto cppSettings = ToCpp(*settings);

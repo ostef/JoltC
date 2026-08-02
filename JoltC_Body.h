@@ -11,7 +11,6 @@ typedef struct JPH_BodyLockInterface         JPH_BodyLockInterface;
 typedef struct JPH_Body                      JPH_Body;
 typedef struct JPH_MotionProperties          JPH_MotionProperties;
 typedef struct JPH_SoftBodyMotionProperties  JPH_SoftBodyMotionProperties;
-typedef struct JPH_SoftBodySharedSettings    JPH_SoftBodySharedSettings;
 
 typedef struct JPH_BodyManager JPH_BodyManager;
 
@@ -62,7 +61,7 @@ enum JPH_EAllowedDOFsFlags_ {
     JPH_EAllowedDOFs_RotationX = 1 << 3,
     JPH_EAllowedDOFs_RotationY = 1 << 4,
     JPH_EAllowedDOFs_RotationZ = 1 << 5,
-    JPH_EAllowedDOFs_Plane2D = JPH_EAllowedDOFs_TranslationX | JPH_EAllowedDOFs_TranslationY | JPH_EAllowedDOFs_TranslationZ,
+    JPH_EAllowedDOFs_Plane2D = JPH_EAllowedDOFs_TranslationX | JPH_EAllowedDOFs_TranslationY | JPH_EAllowedDOFs_RotationZ,
 };
 
 // BodyCreationSettings
@@ -114,6 +113,9 @@ JOLTC_API bool JPH_BodyCreationSettings_HasMassProperties(const JPH_BodyCreation
 JOLTC_API JPH_MassProperties JPH_BodyCreationSettings_GetMassProperties(const JPH_BodyCreationSettings *settings);
 
 // SoftBodyCreationSettings
+
+typedef struct JPH_SoftBodySharedSettings {
+} JPH_SoftBodySharedSettings;
 
 typedef struct JPH_SoftBodyCreationSettings {
     const JPH_SoftBodySharedSettings *settings;

@@ -23,8 +23,7 @@ Additional options are:
 
 ## Not implemented yet
 The following parts of Jolt are not yet implemented:
-* Shape casts and extended collision queries
-* Constraints
-* Character
+* Soft bodies
 * Skeleton and Ragdoll
 * Vehicles
+* Hair

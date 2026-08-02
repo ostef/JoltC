@@ -240,6 +240,7 @@ typedef struct JPH_RayCast {
     JPH_Vec3 direction;
 } JPH_RayCast;
 
+JOLTC_API JPH_RayCast JPH_RayCast_Make(JPH_Vec3 origin, JPH_Vec3 direction, float length);
 JOLTC_API JPH_RayCast JPH_RayCast_Transformed(const JPH_RayCast *ray, JPH_Mat44 transform);
 JOLTC_API JPH_RayCast JPH_RayCast_Translated(const JPH_RayCast *ray, JPH_Vec3 translation);
 JOLTC_API JPH_Vec3 JPH_RayCast_GetPointOnRay(const JPH_RayCast *ray, float fraction);
@@ -249,6 +250,7 @@ typedef struct JPH_RRayCast {
     JPH_Vec3 direction;
 } JPH_RRayCast;
 
+JOLTC_API JPH_RRayCast JPH_RRayCast_Make(JPH_RVec3 origin, JPH_Vec3 direction, float length);
 JOLTC_API JPH_RRayCast JPH_RRayCast_Transformed(const JPH_RRayCast *ray, JPH_RMat44 transform);
 JOLTC_API JPH_RRayCast JPH_RRayCast_Translated(const JPH_RRayCast *ray, JPH_RVec3 translation);
 JOLTC_API JPH_RVec3 JPH_RRayCast_GetPointOnRay(const JPH_RRayCast *ray, float fraction);
@@ -343,16 +345,7 @@ enum JPH_ECollectFacesMode_ {
     JPH_ECollectFacesMode_NoFaces,
 };
 
-typedef struct JPH_CollideSettingsBase {
-    JPH_EActiveEdgeMode activeEdgeMode;
-    JPH_ECollectFacesMode collectFacesMode;
-    float collisionTolerance;
-    float penetrationTolerance;
-    JPH_Vec3 activeEdgeMovementDirection;
-} JPH_CollideSettingsBase;
-
 typedef struct JPH_ShapeCastSettings {
-    // JPH_CollideSettingsBase base
     JPH_EActiveEdgeMode activeEdgeMode;
     JPH_ECollectFacesMode collectFacesMode;
     float collisionTolerance;
@@ -366,8 +359,9 @@ typedef struct JPH_ShapeCastSettings {
     bool returnDeepestPoint;
 } JPH_ShapeCastSettings;
 
+JOLTC_API JPH_ShapeCastSettings JPH_ShapeCastSettings_Default();
+
 typedef struct JPH_CollideShapeSettings {
-    // JPH_CollideSettingsBase base
     JPH_EActiveEdgeMode activeEdgeMode;
     JPH_ECollectFacesMode collectFacesMode;
     float collisionTolerance;
@@ -378,6 +372,8 @@ typedef struct JPH_CollideShapeSettings {
     JPH_EBackFaceMode backFaceMode;
     float internalEdgeRemovalVertexToleranceSq;
 } JPH_CollideShapeSettings;
+
+JOLTC_API JPH_CollideShapeSettings JPH_CollideShapeSettings_Default();
 
 typedef struct JPH_RShapeCast {
     const JPH_Shape *shape;

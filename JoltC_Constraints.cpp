@@ -12,6 +12,63 @@ void SetConstraintSettings(JPH::ConstraintSettings &cppSettings, const JPH_Const
     cppSettings.mUserData = settings->userData;
 }
 
+JPH_SpringSettings JPH_SpringSettings_Default() {
+    return JPH_SpringSettings{
+        .mode=JPH_ESpringMode_FrequencyAndDamping,
+        .frequency=0.0f,
+        .damping=0.0f,
+    };
+}
+
+JPH_SpringSettings JPH_SpringSettings_Make(JPH_ESpringMode mode, float frequencyOrStiffness, float damping) {
+    return JPH_SpringSettings{
+        .mode=mode,
+        .frequency=frequencyOrStiffness,
+        .damping=damping,
+    };
+}
+
+JPH_MotorSettings JPH_MotorSettings_Default() {
+    return JPH_MotorSettings{
+        .springSettings=JPH_SpringSettings_Make(JPH_ESpringMode_FrequencyAndDamping, 2.0f, 1.0f),
+        .minForceLimit=-FLT_MAX,
+        .maxForceLimit=FLT_MAX,
+        .minTorqueLimit=-FLT_MAX,
+        .maxTorqueLimit=FLT_MAX,
+    };
+}
+
+static inline
+JPH_ConstraintSettings JPH_ConstraintSettings_Default() {
+    return JPH_ConstraintSettings{
+        .enabled=true,
+        .constraintPriority=0,
+        .numVelocityStepsOverride=0,
+        .numPositionStepsOverride=0,
+        .drawConstraintSize=1.0f,
+        .userData=0,
+    };
+}
+
+static inline
+JPH_TwoBodyConstraintSettings JPH_TwoBodyConstraintSettings_Default() {
+    return JPH_TwoBodyConstraintSettings{
+        .base=JPH_ConstraintSettings_Default(),
+    };
+}
+
+JPH_ConeConstraintSettings JPH_ConeConstraintSettings_Default() {
+    return JPH_ConeConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .point1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .twistAxis1=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .point2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .twistAxis2=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .halfConeAngle=0.0f,
+    };
+}
+
 JPH_TwoBodyConstraint *JPH_ConeConstraintSettings_CreateConstraint(const JPH_ConeConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::ConeConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
@@ -25,6 +82,18 @@ JPH_TwoBodyConstraint *JPH_ConeConstraintSettings_CreateConstraint(const JPH_Con
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
 }
 
+JPH_DistanceConstraintSettings JPH_DistanceConstraintSettings_Default() {
+    return JPH_DistanceConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .point1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .point2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .minDistance=-1.0f,
+        .maxDistance=-1.0f,
+        .limitsSpringSettings=JPH_SpringSettings_Default(),
+    };
+}
+
 JPH_TwoBodyConstraint *JPH_DistanceConstraintSettings_CreateConstraint(const JPH_DistanceConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::DistanceConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
@@ -36,6 +105,20 @@ JPH_TwoBodyConstraint *JPH_DistanceConstraintSettings_CreateConstraint(const JPH
     cppSettings.mLimitsSpringSettings = ToCpp(settings->limitsSpringSettings);
 
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
+}
+
+JPH_FixedConstraintSettings JPH_FixedConstraintSettings_Default() {
+    return JPH_FixedConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .autoDetectPoint=false,
+        .point1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .axisX1=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .axisY1=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .point2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .axisX2=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .axisY2=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+    };
 }
 
 JPH_TwoBodyConstraint *JPH_FixedConstraintSettings_CreateConstraint(const JPH_FixedConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
@@ -53,6 +136,16 @@ JPH_TwoBodyConstraint *JPH_FixedConstraintSettings_CreateConstraint(const JPH_Fi
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
 }
 
+JPH_GearConstraintSettings JPH_GearConstraintSettings_Default() {
+    return JPH_GearConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .hingeAxis1=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .hingeAxis2=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .ratio=1.0f,
+    };
+}
+
 JPH_TwoBodyConstraint *JPH_GearConstraintSettings_CreateConstraint(const JPH_GearConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::GearConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
@@ -62,6 +155,24 @@ JPH_TwoBodyConstraint *JPH_GearConstraintSettings_CreateConstraint(const JPH_Gea
     cppSettings.mRatio = settings->ratio;
 
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
+}
+
+JPH_HingeConstraintSettings JPH_HingeConstraintSettings_Default() {
+    return JPH_HingeConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .point1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .hingeAxis1=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .normalAxis1=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .point2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .hingeAxis2=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .normalAxis2=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .limitsMin=-JPH::JPH_PI,
+        .limitsMax=JPH::JPH_PI,
+        .limitsSpringSettings=JPH_SpringSettings_Default(),
+        .maxFrictionTorque=0.0f,
+        .motorSettings=JPH_MotorSettings_Default(),
+    };
 }
 
 JPH_TwoBodyConstraint *JPH_HingeConstraintSettings_CreateConstraint(const JPH_HingeConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
@@ -121,6 +232,19 @@ void JPH_PathConstraintPathHermite_AddPoint(JPH_PathConstraintPathHermite *path,
     ToCpp(path)->AddPoint(ToCpp(position), ToCpp(tangent), ToCpp(normal));
 }
 
+JPH_PathConstraintSettings JPH_PathConstraintSettings_Default() {
+    return JPH_PathConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .path=nullptr,
+        .pathPosition=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+        .pathRotation=JPH_Quat_sIdentity,
+        .pathFraction=0.0f,
+        .maxFrictionForce=0.0f,
+        .positionMotorSettings=JPH_MotorSettings_Default(),
+        .rotationConstraintType=JPH_EPathRotationConstraintType_Free,
+    };
+}
+
 JPH_TwoBodyConstraint *JPH_PathConstraintSettings_CreateConstraint(const JPH_PathConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::PathConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
@@ -135,6 +259,15 @@ JPH_TwoBodyConstraint *JPH_PathConstraintSettings_CreateConstraint(const JPH_Pat
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
 }
 
+JPH_PointConstraintSettings JPH_PointConstraintSettings_Default() {
+    return JPH_PointConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .point1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .point2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+    };
+}
+
 JPH_TwoBodyConstraint *JPH_PointConstraintSettings_CreateConstraint(const JPH_PointConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::PointConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
@@ -143,6 +276,20 @@ JPH_TwoBodyConstraint *JPH_PointConstraintSettings_CreateConstraint(const JPH_Po
     cppSettings.mPoint2 = ToCpp(settings->point2);
 
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
+}
+
+JPH_PulleyConstraintSettings JPH_PulleyConstraintSettings_Default() {
+    return JPH_PulleyConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .bodyPoint1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .fixedPoint1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .bodyPoint2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .fixedPoint2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .ratio=1.0f,
+        .minLength=0.0f,
+        .maxLength=-1.0f,
+    };
 }
 
 JPH_TwoBodyConstraint *JPH_PulleyConstraintSettings_CreateConstraint(const JPH_PulleyConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
@@ -159,6 +306,16 @@ JPH_TwoBodyConstraint *JPH_PulleyConstraintSettings_CreateConstraint(const JPH_P
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
 }
 
+JPH_RackAndPinionConstraintSettings JPH_RackAndPinionConstraintSettings_Default() {
+    return JPH_RackAndPinionConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .hingeAxis=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .sliderAxis=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .ratio=1.0f,
+    };
+}
+
 JPH_TwoBodyConstraint *JPH_RackAndPinionConstraintSettings_CreateConstraint(const JPH_RackAndPinionConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::RackAndPinionConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
@@ -168,6 +325,25 @@ JPH_TwoBodyConstraint *JPH_RackAndPinionConstraintSettings_CreateConstraint(cons
     cppSettings.mRatio = settings->ratio;
 
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
+}
+
+JPH_SixDOFConstraintSettings JPH_SixDOFConstraintSettings_Default() {
+    return JPH_SixDOFConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .position1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .axisX1=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .axisY1=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .position2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .axisX2=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .axisY2=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .maxFriction={ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+        .swingType=JPH_ESwingType_Cone,
+        .limitMin={-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX},
+        .limitMax={ FLT_MAX,  FLT_MAX,  FLT_MAX,  FLT_MAX,  FLT_MAX,  FLT_MAX},
+        .limitsSpringSettings={ JPH_SpringSettings_Default(),  JPH_SpringSettings_Default(),  JPH_SpringSettings_Default() },
+        .motorSettings={ JPH_MotorSettings_Default(),  JPH_MotorSettings_Default(),  JPH_MotorSettings_Default() },
+    };
 }
 
 JPH_TwoBodyConstraint *JPH_SixDOFConstraintSettings_CreateConstraint(const JPH_SixDOFConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
@@ -213,6 +389,25 @@ void JPH_SixDOFConstraintSettings_SetLimitedAxis(JPH_SixDOFConstraintSettings *s
     settings->limitMax[axis] = max;
 }
 
+JPH_SliderConstraintSettings JPH_SliderConstraintSettings_Default() {
+    return JPH_SliderConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .autoDetectPoint=false,
+        .point1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .sliderAxis1=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .normalAxis1=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .point2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .sliderAxis2=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .normalAxis2=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .limitsMin=-FLT_MAX,
+        .limitsMax=FLT_MAX,
+        .limitsSpringSettings=JPH_SpringSettings_Default(),
+        .maxFrictionForce=0.0f,
+        .motorSettings=JPH_MotorSettings_Default(),
+    };
+}
+
 JPH_TwoBodyConstraint *JPH_SliderConstraintSettings_CreateConstraint(const JPH_SliderConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {
     auto cppSettings = JPH::SliderConstraintSettings();
     SetConstraintSettings(cppSettings, &settings->base.base);
@@ -232,6 +427,27 @@ JPH_TwoBodyConstraint *JPH_SliderConstraintSettings_CreateConstraint(const JPH_S
 
     return ToC(cppSettings.Create(*ToCpp(body1), *ToCpp(body2)));
 
+}
+
+JPH_SwingTwistConstraintSettings JPH_SwingTwistConstraintSettings_Default() {
+    return JPH_SwingTwistConstraintSettings{
+        .base=JPH_TwoBodyConstraintSettings_Default(),
+        .space=JPH_EConstraintSpace_WorldSpace,
+        .position1=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .twistAxis1=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .planeAxis1=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .position2=JPH_RVec3_Make(0.0, 0.0, 0.0),
+        .twistAxis2=JPH_Vec3_Make(1.0f, 0.0f, 0.0f),
+        .planeAxis2=JPH_Vec3_Make(0.0f, 1.0f, 0.0f),
+        .swingType=JPH_ESwingType_Cone,
+        .normalHalfConeAngle=0.0f,
+        .planeHalfConeAngle=0.0f,
+        .twistMinAngle=0.0f,
+        .twistMaxAngle=0.0f,
+        .maxFrictionTorque=0.0f,
+        .swingMotorSettings=JPH_MotorSettings_Default(),
+        .twistMotorSettings=JPH_MotorSettings_Default(),
+    };
 }
 
 JPH_TwoBodyConstraint *JPH_SwingTwistConstraintSettings_CreateConstraint(const JPH_SwingTwistConstraintSettings *settings, JPH_Body *body1, JPH_Body *body2) {

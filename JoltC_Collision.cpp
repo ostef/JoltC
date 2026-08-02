@@ -284,6 +284,13 @@ const JPH_ObjectLayerFilter *JPH_DefaultObjectLayerFilter_CreateFilter(JPH_Defau
     return JPH_ObjectLayerFilter_Create(filter, funcs, allocator);
 }
 
+JPH_RayCast JPH_RayCast_Make(JPH_Vec3 origin, JPH_Vec3 direction, float length) {
+    return JPH_RayCast{
+        .origin=origin,
+        .direction=ToC(ToCpp(direction) * length),
+    };
+}
+
 JPH_RayCast JPH_RayCast_Transformed(const JPH_RayCast *ray, JPH_Mat44 transform) {
     return ToC(ToCpp(ray)->Transformed(ToCpp(transform)));
 }
@@ -294,6 +301,13 @@ JPH_RayCast JPH_RayCast_Translated(const JPH_RayCast *ray, JPH_Vec3 translation)
 
 JPH_Vec3 JPH_RayCast_GetPointOnRay(const JPH_RayCast *ray, float fraction) {
     return ToC(ToCpp(ray)->GetPointOnRay(fraction));
+}
+
+JPH_RRayCast JPH_RRayCast_Make(JPH_RVec3 origin, JPH_Vec3 direction, float length) {
+    return JPH_RRayCast{
+        .origin=origin,
+        .direction=ToC(ToCpp(direction) * length),
+    };
 }
 
 JPH_RRayCast JPH_RRayCast_Transformed(const JPH_RRayCast *ray, JPH_RMat44 transform) {
@@ -316,6 +330,36 @@ JPH_RayCastSettings JPH_RayCastSettings_Default() {
 JPH_RayCastResult JPH_RayCastResult_Default() {
     auto result = JPH::RayCastResult();
     return *reinterpret_cast<JPH_RayCastResult *>(&result);
+}
+
+JPH_ShapeCastSettings JPH_ShapeCastSettings_Default() {
+    return JPH_ShapeCastSettings{
+        .activeEdgeMode=JPH_EActiveEdgeMode_CollideOnlyWithActive,
+        .collectFacesMode=JPH_ECollectFacesMode_NoFaces,
+        .collisionTolerance=JPH_cDefaultCollisionTolerance,
+        .penetrationTolerance=JPH_cDefaultPenetrationTolerance,
+        .activeEdgeMovementDirection=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+
+        .extraConvexRadius=0.0f,
+        .backFaceModeTriangles=JPH_EBackFaceMode_IgnoreBackFaces,
+        .backFaceModeConvex=JPH_EBackFaceMode_IgnoreBackFaces,
+        .useShrunkenShapeAndConvexRadius=false,
+        .returnDeepestPoint=false,
+    };
+}
+
+JPH_CollideShapeSettings JPH_CollideShapeSettings_Default() {
+    return JPH_CollideShapeSettings{
+        .activeEdgeMode=JPH_EActiveEdgeMode_CollideOnlyWithActive,
+        .collectFacesMode=JPH_ECollectFacesMode_NoFaces,
+        .collisionTolerance=JPH_cDefaultCollisionTolerance,
+        .penetrationTolerance=JPH_cDefaultPenetrationTolerance,
+        .activeEdgeMovementDirection=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
+
+        .maxSeparationDistance=0.0f,
+        .backFaceMode=JPH_EBackFaceMode_IgnoreBackFaces,
+        .internalEdgeRemovalVertexToleranceSq=JPH_cDefaultInternalEdgeRemovalVertexToleranceSq,
+    };
 }
 
 JPH_AABox JPH_BroadPhaseQuery_GetBounds(const JPH_BroadPhaseQuery *query) {
