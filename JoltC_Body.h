@@ -1,7 +1,5 @@
 #pragma once
 
-// @Todo: BodyFilter
-
 #include <JoltC_Core.h>
 #include <JoltC_Collision.h>
 #include <JoltC_Shapes.h>
