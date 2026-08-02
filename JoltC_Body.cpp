@@ -108,6 +108,10 @@ JPH_BodyID JPH_BodyInterface_CreateAndAddSoftBody(JPH_BodyInterface *bodyInterfa
     return ToCpp(bodyInterface)->CreateAndAddSoftBody(*ToCpp(settings), static_cast<JPH::EActivation>(activationMode)).GetIndexAndSequenceNumber();
 }
 
+void JPH_BodyInterface_ActivateConstraint(JPH_BodyInterface *bodyInterface, const JPH_TwoBodyConstraint *constraint) {
+    ToCpp(bodyInterface)->ActivateConstraint(ToCpp(constraint));
+}
+
 void JPH_BodyInterface_MoveKinematic(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_RVec3 targetPosition, JPH_Quat targetRotation, float deltaTime) {
     ToCpp(bodyInterface)->MoveKinematic(JPH::BodyID(bodyID), ToCpp(targetPosition), ToCpp(targetRotation), deltaTime);
 }

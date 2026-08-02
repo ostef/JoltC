@@ -6,6 +6,8 @@
 #include <JoltC_Collision.h>
 #include <JoltC_Shapes.h>
 
+struct JPH_TwoBodyConstraint;
+
 typedef struct JPH_BodyInterface             JPH_BodyInterface;
 typedef struct JPH_BodyLockInterface         JPH_BodyLockInterface;
 typedef struct JPH_Body                      JPH_Body;
@@ -164,8 +166,12 @@ JOLTC_API void JPH_BodyInterface_RemoveBody(JPH_BodyInterface *bodyInterface, JP
 JOLTC_API bool JPH_BodyInterface_IsAdded(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID);
 JOLTC_API JPH_BodyID JPH_BodyInterface_CreateAndAddBody(JPH_BodyInterface *bodyInterface, const JPH_BodyCreationSettings *settings, JPH_EActivation activationMode);
 JOLTC_API JPH_BodyID JPH_BodyInterface_CreateAndAddSoftBody(JPH_BodyInterface *bodyInterface, const JPH_SoftBodyCreationSettings *settings, JPH_EActivation activationMode);
-// JOLTC_API JPH_TwoBodyConstraint *JPH_BodyInterface_CreateConstraint(JPH_BodyInterface *bodyInterface, const TwoBodyConstraintSettings *settings, JPH_BodyID bodyID1, JPH_BodyID bodyID2);
-// JOLTC_APIvoid JPH_BodyInterface_ActivateConstraint(JPH_BodyInterface *bodyInterface, const TwoBodyConstraint *constraint);
+// CreateConstraint here just locks the two bodies and pass it to settings->Create
+// We can't implement this easily because our constraint settings implementation is not ABI compatible with the original
+// Since it's not a big function we probably won't implement it and just let users use the constraint specific CreateConstraint
+// function and lock the bodies beforehand
+// JOLTC_API JPH_TwoBodyConstraint *JPH_BodyInterface_CreateConstraint(JPH_BodyInterface *bodyInterface, const JPH_TwoBodyConstraintSettings *settings, JPH_BodyID bodyID1, JPH_BodyID bodyID2);
+JOLTC_API void JPH_BodyInterface_ActivateConstraint(JPH_BodyInterface *bodyInterface, const struct JPH_TwoBodyConstraint *constraint);
 JOLTC_API void JPH_BodyInterface_MoveKinematic(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_RVec3 targetPosition, JPH_Quat targetRotation, float deltaTime);
 JOLTC_API void JPH_BodyInterface_SetLinearAndAngularVelocity(JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_Vec3 linearVelocity, JPH_Vec3 angularVelocity);
 JOLTC_API void JPH_BodyInterface_GetLinearAndAngularVelocity(const JPH_BodyInterface *bodyInterface, JPH_BodyID bodyID, JPH_Vec3 *outLinearVelocity, JPH_Vec3 *outAngularVelocity);
