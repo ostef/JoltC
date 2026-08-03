@@ -460,7 +460,7 @@ JPH_RotatedTranslatedShapeSettings JPH_RotatedTranslatedShapeSettings_Default() 
     return JPH_RotatedTranslatedShapeSettings{
         .base=JPH_DecoratedShapeSettings_Default(),
         .position=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
-        .rotation=JPH_Quat_sIdentity,
+        .rotation={0.0f, 0.0f, 0.0f, 1.0f},
     };
 }
 

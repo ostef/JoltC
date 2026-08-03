@@ -237,7 +237,7 @@ JPH_PathConstraintSettings JPH_PathConstraintSettings_Default() {
         .base=JPH_TwoBodyConstraintSettings_Default(),
         .path=nullptr,
         .pathPosition=JPH_Vec3_Make(0.0f, 0.0f, 0.0f),
-        .pathRotation=JPH_Quat_sIdentity,
+        .pathRotation={0.0f, 0.0f, 0.0f, 1.0f},
         .pathFraction=0.0f,
         .maxFrictionForce=0.0f,
         .positionMotorSettings=JPH_MotorSettings_Default(),

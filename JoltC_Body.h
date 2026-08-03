@@ -114,8 +114,7 @@ JOLTC_API JPH_MassProperties JPH_BodyCreationSettings_GetMassProperties(const JP
 
 // SoftBodyCreationSettings
 
-typedef struct JPH_SoftBodySharedSettings {
-} JPH_SoftBodySharedSettings;
+typedef struct JPH_SoftBodySharedSettings JPH_SoftBodySharedSettings;
 
 typedef struct JPH_SoftBodyCreationSettings {
     const JPH_SoftBodySharedSettings *settings;
