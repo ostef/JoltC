@@ -617,7 +617,9 @@ JPH_MassProperties JPH_Shape_GetMassProperties(const JPH_Shape *shape) {
 const JPH_Shape *JPH_Shape_GetLeafShape(const JPH_Shape *shape, JPH_SubShapeID subShapeID, JPH_SubShapeID *outRemainder) {
     JPH::SubShapeID remainder;
     const JPH::Shape *result = ToCpp(shape)->GetLeafShape(*reinterpret_cast<JPH::SubShapeID *>(&subShapeID), remainder);
-    *outRemainder = *reinterpret_cast<JPH_SubShapeID *>(&remainder);
+    if (outRemainder) {
+        *outRemainder = *reinterpret_cast<JPH_SubShapeID *>(&remainder);
+    }
     return ToC(result);
 }
 

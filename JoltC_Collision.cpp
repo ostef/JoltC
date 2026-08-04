@@ -366,11 +366,11 @@ JPH_AABox JPH_BroadPhaseQuery_GetBounds(const JPH_BroadPhaseQuery *query) {
     return ToC(ToCpp(query)->GetBounds());
 }
 
-#define DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(name, result_type) \
+#define DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(name) \
     class name##Wrapper final : public JPH::name { \
     private: \
         void *data; \
-        JPH_CollisionCollector_##result_type##_Funcs funcs; \
+        JPH_##name##_Funcs funcs; \
         JPH_JoltCAllocator allocator; \
     \
     public: \
@@ -379,7 +379,7 @@ JPH_AABox JPH_BroadPhaseQuery_GetBounds(const JPH_BroadPhaseQuery *query) {
         void operator delete[] (void *ptr) noexcept              { JPH_JoltCAllocator allocator = reinterpret_cast<name##Wrapper *>(ptr)->allocator; JPH_JoltCAllocator_Free(allocator, ptr); } \
         void operator delete[] (void *ptr, size_t size) noexcept { JPH_JoltCAllocator allocator = reinterpret_cast<name##Wrapper *>(ptr)->allocator; JPH_JoltCAllocator_Free(allocator, ptr); } \
     \
-        name##Wrapper(void *data, JPH_CollisionCollector_##result_type##_Funcs funcs, JPH_JoltCAllocator allocator) \
+        name##Wrapper(void *data, JPH_##name##_Funcs funcs, JPH_JoltCAllocator allocator) \
             : data(data), funcs(funcs), allocator(allocator) { \
         } \
     \
@@ -389,53 +389,81 @@ JPH_AABox JPH_BroadPhaseQuery_GetBounds(const JPH_BroadPhaseQuery *query) {
     \
         virtual ~name##Wrapper() override { \
             if (funcs.Destruct) { \
-                funcs.Destruct(data); \
+                funcs.Destruct(ToC(this), data); \
             } \
         } \
     \
         virtual void Reset() override { \
             if (funcs.Reset) { \
-                funcs.Reset(data); \
+                funcs.Reset(ToC(this), data); \
             } \
         } \
     \
         virtual void OnBody(const JPH::Body &body) override { \
             if (funcs.OnBody) { \
-                funcs.OnBody(data, &ToC(body)); \
+                funcs.OnBody(ToC(this), data, &ToC(body)); \
             } \
         } \
     \
         virtual void OnBodyEnd() override { \
             if (funcs.OnBodyEnd) { \
-                funcs.OnBodyEnd(data); \
+                funcs.OnBodyEnd(ToC(this), data); \
             } \
         } \
     \
         virtual void SetUserData(uint64_t userData) override { \
             if (funcs.SetUserData) { \
-                funcs.SetUserData(data, userData); \
+                funcs.SetUserData(ToC(this), data, userData); \
             } \
         } \
     \
         virtual void AddHit(const JPH::name::ResultType &result) override { \
             if (funcs.AddHit) { \
-                funcs.AddHit(data, ToC(result)); \
+                funcs.AddHit(ToC(this), data, ToC(result)); \
             } \
         } \
     }; \
     \
-    JPH_##name *JPH_##name##_Create(void *data, JPH_CollisionCollector_##result_type##_Funcs funcs, JPH_JoltCAllocator allocator) { \
+    JPH_##name *JPH_##name##_Create(void *data, JPH_##name##_Funcs funcs, JPH_JoltCAllocator allocator) { \
         void *ptr = JPH_JoltCAllocator_Allocate(allocator, sizeof(name##Wrapper)); \
         return ToC(new(ptr) name##Wrapper(data, funcs, allocator)); \
     } \
     \
     void JPH_##name##_Destroy(JPH_##name *self) { \
         delete ToCpp(self); \
+    } \
+    \
+    void JPH_##name##_UpdateEarlyOutFraction(JPH_##name *collector, float fraction) { \
+        ToCpp(collector)->UpdateEarlyOutFraction(fraction); \
+    } \
+    \
+    void JPH_##name##_SetEarlyOutFraction(JPH_##name *collector, float fraction) { \
+        ToCpp(collector)->ResetEarlyOutFraction(fraction); \
+    } \
+    \
+    float JPH_##name##_GetEarlyOutFraction(const JPH_##name *collector) { \
+        return ToCpp(collector)->GetEarlyOutFraction(); \
+    } \
+    \
+    float JPH_##name##_GetPositiveEarlyOutFraction(const JPH_##name *collector) { \
+        return ToCpp(collector)->GetPositiveEarlyOutFraction(); \
+    } \
+    \
+    void JPH_##name##_ResetEarlyOutFraction(JPH_##name *collector) { \
+        ToCpp(collector)->ResetEarlyOutFraction(); \
+    } \
+    \
+    void JPH_##name##_ForceEarlyOut(JPH_##name *collector) { \
+        ToCpp(collector)->ForceEarlyOut(); \
+    } \
+    \
+    bool JPH_##name##_ShouldEarlyOut(const JPH_##name *collector) { \
+        return ToCpp(collector)->ShouldEarlyOut(); \
     }
 
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(RayCastBodyCollector, BroadPhaseCastResult);
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastShapeBodyCollector, BroadPhaseCastResult);
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollideShapeBodyCollector, BodyID);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(RayCastBodyCollector);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastShapeBodyCollector);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollideShapeBodyCollector);
 
 bool JPH_BroadPhaseQuery_CastRaySimple(const JPH_BroadPhaseQuery *query, JPH_RayCast ray, JPH_ECollisionCollectorType collectorType, void *callbackData, JPH_BroadPhaseQuery_CastRayHitCallback callback, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter) {
     switch (collectorType) {
@@ -521,11 +549,11 @@ void JPH_BroadPhaseQuery_CastAABox(const JPH_BroadPhaseQuery *query, JPH_AABoxCa
     ToCpp(query)->CastAABox(ToCpp(box), *ToCpp(collector), *ToCpp(broadPhaseLayerFilter), *ToCpp(objectLayerFilter));
 }
 
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastRayCollector, RayCastResult);
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastShapeCollector, ShapeCastResult);
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollidePointCollector, CollidePointResult);
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollideShapeCollector, CollideShapeResult);
-DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(TransformedShapeCollector, TransformedShape);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastRayCollector);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CastShapeCollector);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollidePointCollector);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(CollideShapeCollector);
+DEFINE_COLLISION_COLLECTOR_INTERFACE_WRAPPER_CLASS(TransformedShapeCollector);
 
 bool JPH_NarrowPhaseQuery_CastRayClosest(const JPH_NarrowPhaseQuery *query, JPH_RRayCast ray, JPH_RayCastResult *ioHit, const JPH_BroadPhaseLayerFilter *broadPhaseLayerFilter, const JPH_ObjectLayerFilter *objectLayerFilter, const JPH_BodyFilter *bodyFilter) {
     JPH::BroadPhaseLayerFilter defaultBroadPhaseLayerFilter;

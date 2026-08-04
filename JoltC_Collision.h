@@ -378,43 +378,37 @@ JOLTC_API JPH_CollideShapeSettings JPH_CollideShapeSettings_Default();
 typedef struct JPH_RShapeCast {
     const JPH_Shape *shape;
     const JPH_Vec3 scale;
-    const JPH_RMat44  centerOfMassStart;
+    const JPH_RMat44 centerOfMassStart;
     const JPH_Vec3 direction;
     const JPH_AABox shapeWorldBounds;
 } JPH_RShapeCast;
 
+#define JOLTC_COLLISION_COLLECTOR(name, result_type) \
+    typedef struct JPH_##name JPH_##name; \
+    typedef struct JPH_##name##_Funcs { \
+        void (JOLTC_CALL *Destruct)(JPH_##name *collector, void *data); \
+        void (JOLTC_CALL *Reset)(JPH_##name *collector, void *data); \
+        void (JOLTC_CALL *OnBody)(JPH_##name *collector, void *data, const struct JPH_Body *body); \
+        void (JOLTC_CALL *OnBodyEnd)(JPH_##name *collector, void *data); \
+        void (JOLTC_CALL *SetUserData)(JPH_##name *collector, void *data, uint64_t userData); \
+        void (JOLTC_CALL *AddHit)(JPH_##name *collector, void *data, JPH_##result_type result); \
+    } JPH_##name##_Funcs; \
+    \
+    JOLTC_API JPH_##name *JPH_##name##_Create(void *data, JPH_##name##_Funcs funcs, JPH_JoltCAllocator allocator); \
+    JOLTC_API void JPH_##name##_Destroy(JPH_##name *self); \
+    JOLTC_API void JPH_##name##_UpdateEarlyOutFraction(JPH_##name *collector, float fraction); \
+    JOLTC_API void JPH_##name##_SetEarlyOutFraction(JPH_##name *collector, float fraction); \
+    JOLTC_API float JPH_##name##_GetEarlyOutFraction(const JPH_##name *collector); \
+    JOLTC_API float JPH_##name##_GetPositiveEarlyOutFraction(const JPH_##name *collector); \
+    JOLTC_API void JPH_##name##_ResetEarlyOutFraction(JPH_##name *collector); \
+    JOLTC_API void JPH_##name##_ForceEarlyOut(JPH_##name *collector); \
+    JOLTC_API bool JPH_##name##_ShouldEarlyOut(const JPH_##name *collector);
+
 // BroadPhase collectors
 
-#define JOLTC_COLLISION_COLLECTOR_FUNCS(ResultType) \
-    typedef struct JPH_CollisionCollector_##ResultType##_Funcs { \
-        void (JOLTC_CALL *Destruct)(void *data); \
-        void (JOLTC_CALL *Reset)(void *data); \
-        void (JOLTC_CALL *OnBody)(void *data, const struct JPH_Body *body); \
-        void (JOLTC_CALL *OnBodyEnd)(void *data); \
-        void (JOLTC_CALL *SetUserData)(void *data, uint64_t userData); \
-        void (JOLTC_CALL *AddHit)(void *data, JPH_##ResultType result); \
-    } JPH_CollisionCollector_##ResultType##_Funcs;
-
-JOLTC_COLLISION_COLLECTOR_FUNCS(BodyID);
-JOLTC_COLLISION_COLLECTOR_FUNCS(BroadPhaseCastResult);
-JOLTC_COLLISION_COLLECTOR_FUNCS(RayCastResult);
-JOLTC_COLLISION_COLLECTOR_FUNCS(ShapeCastResult);
-JOLTC_COLLISION_COLLECTOR_FUNCS(CollidePointResult);
-JOLTC_COLLISION_COLLECTOR_FUNCS(CollideShapeResult);
-JOLTC_COLLISION_COLLECTOR_FUNCS(TransformedShape);
-
-typedef struct JPH_RayCastBodyCollector JPH_RayCastBodyCollector;
-typedef struct JPH_CastShapeBodyCollector JPH_CastShapeBodyCollector;
-typedef struct JPH_CollideShapeBodyCollector JPH_CollideShapeBodyCollector;
-
-JOLTC_API JPH_RayCastBodyCollector *JPH_RayCastBodyCollector_Create(void *data, JPH_CollisionCollector_BroadPhaseCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_RayCastBodyCollector_Destroy(JPH_RayCastBodyCollector *self);
-
-JOLTC_API JPH_CastShapeBodyCollector *JPH_CastShapeBodyCollector_Create(void *data, JPH_CollisionCollector_BroadPhaseCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_CastShapeBodyCollector_Destroy(JPH_CastShapeBodyCollector *self);
-
-JOLTC_API JPH_CollideShapeBodyCollector *JPH_CollideShapeBodyCollector_Create(void *data, JPH_CollisionCollector_BodyID_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_CollideShapeBodyCollector_Destroy(JPH_CollideShapeBodyCollector *self);
+JOLTC_COLLISION_COLLECTOR(RayCastBodyCollector, BroadPhaseCastResult);
+JOLTC_COLLISION_COLLECTOR(CastShapeBodyCollector, BroadPhaseCastResult);
+JOLTC_COLLISION_COLLECTOR(CollideShapeBodyCollector, BodyID);
 
 // BroadPhaseQuery
 
@@ -432,26 +426,11 @@ JOLTC_API void JPH_BroadPhaseQuery_CastAABox(const JPH_BroadPhaseQuery *query, J
 
 // NarrowPhase collectors
 
-typedef struct JPH_CastRayCollector JPH_CastRayCollector;
-typedef struct JPH_CastShapeCollector JPH_CastShapeCollector;
-typedef struct JPH_CollidePointCollector JPH_CollidePointCollector;
-typedef struct JPH_CollideShapeCollector JPH_CollideShapeCollector;
-typedef struct JPH_TransformedShapeCollector JPH_TransformedShapeCollector;
-
-JOLTC_API JPH_CastRayCollector *JPH_CastRayCollector_Create(void *data, JPH_CollisionCollector_RayCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_CastRayCollector_Destroy(JPH_CastRayCollector *self);
-
-JOLTC_API JPH_CastShapeCollector *JPH_CastShapeCollector_Create(void *data, JPH_CollisionCollector_ShapeCastResult_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_CastShapeCollector_Destroy(JPH_CastShapeCollector *self);
-
-JOLTC_API JPH_CollidePointCollector *JPH_CollidePointCollector_Create(void *data, JPH_CollisionCollector_CollidePointResult_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_CollidePointCollector_Destroy(JPH_CollidePointCollector *self);
-
-JOLTC_API JPH_CollideShapeCollector *JPH_CollideShapeCollector_Create(void *data, JPH_CollisionCollector_CollideShapeResult_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_CollideShapeCollector_Destroy(JPH_CollideShapeCollector *self);
-
-JOLTC_API JPH_TransformedShapeCollector *JPH_TransformedShapeCollector_Create(void *data, JPH_CollisionCollector_TransformedShape_Funcs funcs, JPH_JoltCAllocator allocator);
-JOLTC_API void JPH_TransformedShapeCollector_Destroy(JPH_TransformedShapeCollector *self);
+JOLTC_COLLISION_COLLECTOR(CastRayCollector, RayCastResult);
+JOLTC_COLLISION_COLLECTOR(CastShapeCollector, ShapeCastResult);
+JOLTC_COLLISION_COLLECTOR(CollidePointCollector, CollidePointResult);
+JOLTC_COLLISION_COLLECTOR(CollideShapeCollector, CollideShapeResult);
+JOLTC_COLLISION_COLLECTOR(TransformedShapeCollector, TransformedShape);
 
 // NarrowPhaseQuery
 
