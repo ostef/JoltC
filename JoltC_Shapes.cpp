@@ -684,6 +684,20 @@ JPH_Shape *JPH_Shape_ScaleShape(const JPH_Shape *shape, JPH_Vec3 scale) {
     return ToC(scaledShape);
 }
 
+#ifdef JOLTC_DEBUG_RENDERER
+void JPH_Shape_Draw(const JPH_Shape *shape, JPH_DebugRenderer *renderer, JPH_RMat44 centerOfMassTransform, JPH_Vec3 scale, JPH_Color color, bool useMaterialColors, bool drawWireframe) {
+    ToCpp(shape)->Draw(ToCpp(renderer), ToCpp(centerOfMassTransform), ToCpp(scale), JPH::Color(color), useMaterialColors, drawWireframe);
+}
+
+void JPH_Shape_DrawGetSupportFunction(const JPH_Shape *shape, JPH_DebugRenderer *renderer, JPH_RMat44 centerOfMassTransform, JPH_Vec3 scale, JPH_Color color, bool drawSupportDirection) {
+    ToCpp(shape)->DrawGetSupportFunction(ToCpp(renderer), ToCpp(centerOfMassTransform), ToCpp(scale), JPH::Color(color), drawSupportDirection);
+}
+
+void JPH_Shape_DrawGetSupportingFace(const JPH_Shape *shape, JPH_DebugRenderer *renderer, JPH_RMat44 centerOfMassTransform, JPH_Vec3 scale) {
+    ToCpp(shape)->DrawGetSupportingFace(ToCpp(renderer), ToCpp(centerOfMassTransform), ToCpp(scale));
+}
+#endif
+
 // ConvexShape
 
 void JPH_ConvexShape_SetMaterial(JPH_ConvexShape *shape, const JPH_PhysicsMaterial *material) {

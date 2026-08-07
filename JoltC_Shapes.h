@@ -2,6 +2,8 @@
 
 #include <JoltC_Core.h>
 
+struct JPH_DebugRenderer;
+
 typedef struct JPH_Shape {
     char opaque;
 } JPH_Shape;
@@ -453,6 +455,12 @@ JOLTC_API float JPH_Shape_GetVolume(const JPH_Shape *shape);
 JOLTC_API bool JPH_Shape_IsValidScale(const JPH_Shape *shape, JPH_Vec3 scale);
 JOLTC_API JPH_Vec3 JPH_Shape_MakeScaleValid(const JPH_Shape *shape, JPH_Vec3 scale);
 JOLTC_API JPH_Shape *JPH_Shape_ScaleShape(const JPH_Shape *shape, JPH_Vec3 scale);
+
+#ifdef JOLTC_DEBUG_RENDERER
+JOLTC_API void JPH_Shape_Draw(const JPH_Shape *shape, struct JPH_DebugRenderer *renderer, JPH_RMat44 centerOfMassTransform, JPH_Vec3 scale, JPH_Color color, bool useMaterialColors, bool drawWireframe);
+JOLTC_API void JPH_Shape_DrawGetSupportFunction(const JPH_Shape *shape, struct JPH_DebugRenderer *renderer, JPH_RMat44 centerOfMassTransform, JPH_Vec3 scale, JPH_Color color, bool drawSupportDirection);
+JOLTC_API void JPH_Shape_DrawGetSupportingFace(const JPH_Shape *shape, struct JPH_DebugRenderer *renderer, JPH_RMat44 centerOfMassTransform, JPH_Vec3 scale);
+#endif
 
 // ConvexShape
 
